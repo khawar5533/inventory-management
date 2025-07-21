@@ -10,7 +10,7 @@
   <link href="{{ asset('/resources/js/admin-assets/css/modern.css') }}" rel="stylesheet">
 </head>
 <body>
-    <<div id="app" class="wrapper"></div>
+    <div id="app" class="wrapper"></div>
 
     {{-- FOOTER: Custom JS --}}
 
