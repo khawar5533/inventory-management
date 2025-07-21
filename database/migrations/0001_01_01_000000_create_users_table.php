@@ -35,7 +35,31 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+
+        Schema::create('roles', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->unique();
+            $table->timestamps();
+        });
+
+        Schema::create('permissions', function (Blueprint $table) {
+        $table->id();
+        $table->string('name')->unique();
+        $table->timestamps();
+        });
+        Schema::create('role_user', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('role_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+        });
+        Schema::create('permission_role', function (Blueprint $table) {
+        $table->id();
+        $table->foreignId('permission_id')->constrained()->onDelete('cascade');
+        $table->foreignId('role_id')->constrained()->onDelete('cascade');
+    });
+    
     }
+    
 
     /**
      * Reverse the migrations.
