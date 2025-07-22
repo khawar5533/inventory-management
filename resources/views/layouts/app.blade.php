@@ -16,9 +16,13 @@
 
     <script src="{{ asset('/resources/js/admin-assets/js/app.js') }}"></script>
      {{-- Vite: Vue App --}}
+    <script>
+        window.baseUrl = "{{ url('/') }}";
+        window.defaultComponent = @json($defaultComponent ?? 'Login');
+    </script>
     @vite('resources/js/app.js')
     <script>
-window.BASE_URL = "{{ url('/') }}";
+    window.BASE_URL = "{{ url('/') }}";
 		document.addEventListener("DOMContentLoaded", function() {
 			// Line chart
 			new Chart(document.getElementById("chartjs-dashboard-line"), {

@@ -23,7 +23,9 @@
 							<i class="align-middle me-2 fas fa-fw fa-home"></i> <span class="align-middle">Dashboards</span>
 						</a>
 						<ul id="dashboards" class="sidebar-dropdown list-unstyled collapse show" data-bs-parent="#sidebar">
-							<li class="sidebar-item active"><a class='sidebar-link' href='dashboard-default.html'>Default</a></li>
+							
+							<li class='sidebar-link' @click="$emit('change-component', 'Content')">Dashboard</li>
+							<li class='sidebar-link' @click="$emit('change-component', 'Register')">Register</li>
 							<li class="sidebar-item"><a class='sidebar-link' href='dashboard-analytics.html'>Analytics</a></li>
 							<li class="sidebar-item"><a class='sidebar-link' href='dashboard-e-commerce.html'>E-commerce</a></li>
 						</ul>
