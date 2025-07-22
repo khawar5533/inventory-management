@@ -10,7 +10,13 @@
   <link href="{{ asset('/resources/js/admin-assets/css/modern.css') }}" rel="stylesheet">
 </head>
 <body>
-    <div id="app" class="wrapper"></div>
+   @if ($defaultComponent === 'Login')
+    @vite('resources/js/login.js')
+    <div id="login" data-component="Login"></div>
+    @else
+    @vite('resources/js/app.js')
+    <div id="app" class="wrapper" data-component="{{ $defaultComponent }}"></div>
+    @endif
 
     {{-- FOOTER: Custom JS --}}
 

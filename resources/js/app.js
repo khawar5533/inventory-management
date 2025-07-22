@@ -1,8 +1,9 @@
+import './bootstrap'
 import { createApp } from 'vue'
 import App from './App.vue'
 
-const defaultComponent = document.getElementById('app')?.dataset?.default || 'Content'
+const appDiv = document.getElementById('app')
+if (appDiv) {
+  createApp(App).mount('#app')
+}
 
-createApp(App, {
-  defaultComponent,
-}).mount('#app')
