@@ -1,32 +1,50 @@
 <template>
-  <Sidebar />
+  <Sidebar @change-component="setComponent" />
   <div class="main">
     <Header />
     <main class="content">
-     <!-- Dynamic Content Loaded Here -->
-      <component :is="currentComponent" />
+      <component :is="currentComponent" :key="componentKey" />
     </main>
     <Footer />
-    </div>
+  </div>
 </template>
 
 <script>
-import Sidebar from './components/Sidebar.vue' // or '@/components/Header.vue' if using alias
-import Header from './components/Header.vue' // or '@/components/Header.vue' if using alias
-import Content from './components/Content.vue' // or '@/components/Content.vue' if using alias
-import Footer from './components/Footer.vue' // or '@/components/Footer.vue' if using alias
+import Sidebar from './components/Sidebar.vue'
+import Header from './components/Header.vue'
+import Content from './components/Content.vue'
+import Register from './components/Register.vue'
+import Login from './components/Login.vue'
+import Footer from './components/Footer.vue'
 
 export default {
   name: 'App',
   components: {
     Sidebar,
     Header,
-     Content,
-     Footer
+    Content,
+    Register,
+    Login,
+    Footer
   },
   data() {
     return {
-      currentComponent: 'Content' // 👈 Load Content.vue by default
+      currentComponent: window.defaultComponent || 'Content',
+      componentKey: 0
+    }
+  },
+  methods: {
+    setComponent(componentName) {
+      const base = window.baseUrl || ''
+
+      //Convert component name to lowercase path
+      const routePath = componentName.toLowerCase()
+
+      //Build full URL (empty path for Content)
+      const newUrl = `${base}/${routePath === 'content' ? 'dashboard' : routePath}`
+
+      //Full page reload
+      window.location.href = newUrl
     }
   }
 }

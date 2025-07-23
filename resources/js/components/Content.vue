@@ -381,6 +381,6 @@
 
 <script>
 export default {
-  name: 'Content'
-}
+  name: 'Login'
+};
 </script>
