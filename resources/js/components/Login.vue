@@ -7,6 +7,7 @@
             <div class="d-table-cell align-middle">
               <div class="text-center mt-4">
                 <h1 class="h2">Welcome back</h1>
+                
                 <p class="lead">Sign in to your account to continue</p>
               </div>
 
@@ -16,7 +17,9 @@
                     <div class="text-center mb-3">
                       <!-- <img src="/assets/img/avatars/avatar.jpg" alt="User Avatar" class="img-fluid rounded-circle" width="132" height="132" /> -->
                     </div>
-
+                    <div v-if="statusMessage" class="alert alert-success text-center p-3">
+                          {{ statusMessage }}
+                      </div>
                     <!-- Success/Error Message -->
                     <div v-if="errorMessage" class="alert alert-danger text-center p-3">{{ errorMessage }}</div>
                     <div v-if="successMessage" class="alert alert-success text-center p-3">{{ successMessage }}</div>
@@ -79,10 +82,21 @@ export default {
     };
   },
   mounted() {
-    // Check if a session flash message was passed from Laravel
-    if (window.statusMessage) {
-      this.successMessage = window.statusMessage;
-      setTimeout(() => (this.successMessage = ""), 3000);
+    const params = new URLSearchParams(window.location.search);
+    const rawMessage = params.get('message');
+
+    if (rawMessage) {
+      //  Set successMessage from URL
+      this.successMessage = decodeURIComponent(rawMessage);
+
+      //  Auto-hide after 3 seconds
+      setTimeout(() => {
+        this.successMessage = "";
+      }, 3000);
+
+      // Clean the URL
+      const cleanUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
     }
   },
   methods: {
@@ -97,7 +111,7 @@ export default {
 
       try {
         const baseUrl = window.location.origin + window.location.pathname.split('/').slice(0, 3).join('/');
-        
+
         const response = await fetch(`${baseUrl}/login-user`, {
           method: "POST",
           headers: {
