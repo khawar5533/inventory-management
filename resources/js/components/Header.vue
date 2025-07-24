@@ -152,7 +152,7 @@
 								<a class="dropdown-item" href="#"><i class="align-middle me-1 fas fa-fw fa-chart-pie"></i> Analytics</a>
 								<a class="dropdown-item" href="#"><i class="align-middle me-1 fas fa-fw fa-cogs"></i> Settings</a>
 								<div class="dropdown-divider"></div>
-								<a class="dropdown-item" href="#"><i class="align-middle me-1 fas fa-fw fa-arrow-alt-circle-right"></i> Sign out</a>
+								<a class="dropdown-item" href="javascript:" @click="logoutUser"><i class="align-middle me-1 fas fa-fw fa-arrow-alt-circle-right"></i> Sign out</a>
 							</div>
 						</li>
 					</ul>
@@ -161,6 +161,38 @@
 </template>
 <script>
 export default {
-  name: 'Header'
+  name: 'Header',
+  methods: {
+    async logoutUser() {
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+      if (!csrfToken) {
+        alert("CSRF token missing.");
+        return;
+      }
+
+      try {
+        // Match login base path logic
+        const baseUrl = window.location.origin + window.location.pathname.split('/').slice(0, 3).join('/');
+
+        const response = await fetch(`${baseUrl}`, {
+          method: 'POST',
+          headers: {
+            'X-CSRF-TOKEN': csrfToken,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (response.ok) {
+          window.location.href = `${baseUrl}/`; // redirect to login
+        } else {
+          console.error("Logout failed");
+          alert("Logout failed.");
+        }
+      } catch (error) {
+        // console.error("Logout error:", error);
+        alert("An error occurred during logout.");
+      }
+    }
+  }
 }
 </script>

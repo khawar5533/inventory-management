@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
 class AuthController extends Controller
@@ -16,7 +17,8 @@ class AuthController extends Controller
      * @return \Illuminate\View\View
      */
     public function loadLogin()
-    {
+    {   
+        session()->flash('message', 'Please login to continue');
         return view('layouts.app', ['defaultComponent' => 'Login']);
     }
 
@@ -136,5 +138,16 @@ public function loginUser(Request $request)
     }
 }
 
+public function logout(Request $request)
+{
+    Auth::logout(); // Logs out the current user
+
+    // Clear all session data
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    // Redirect to login page (with flash message if needed)
+    return redirect()->route('login')->with('status', 'Logged out successfully.');
+}
 
 }

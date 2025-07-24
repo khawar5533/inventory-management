@@ -68,61 +68,68 @@
 </template>
 
 <script>
-	export default {
-	name: "Login",
-	data() {
-		return {
-		email: "",
-		password: "",
-		errorMessage: "",
-		successMessage: "",
-		};
-	},
-	methods: {
-		async submitLogin() {
-		const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+export default {
+  name: "Login",
+  data() {
+    return {
+      email: "",
+      password: "",
+      errorMessage: "",
+      successMessage: ""
+    };
+  },
+  mounted() {
+    // Check if a session flash message was passed from Laravel
+    if (window.statusMessage) {
+      this.successMessage = window.statusMessage;
+      setTimeout(() => (this.successMessage = ""), 3000);
+    }
+  },
+  methods: {
+    async submitLogin() {
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-		if (!csrfToken) {
-			this.errorMessage = "CSRF token missing.";
-			setTimeout(() => (this.errorMessage = ""), 3000);
-			return;
-		}
+      if (!csrfToken) {
+        this.errorMessage = "CSRF token missing.";
+        setTimeout(() => (this.errorMessage = ""), 3000);
+        return;
+      }
 
-		try {
-	
-			const baseUrl = window.location.origin + window.location.pathname.split('/').slice(0, 3).join('/');
-			const response = await fetch(`${baseUrl}/login-user`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				"X-CSRF-TOKEN": csrfToken,
-			},
-			body: JSON.stringify({
-				email: this.email,
-				password: this.password,
-			}),
-			});
+      try {
+        const baseUrl = window.location.origin + window.location.pathname.split('/').slice(0, 3).join('/');
+        
+        const response = await fetch(`${baseUrl}/login-user`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": csrfToken,
+          },
+          body: JSON.stringify({
+            email: this.email,
+            password: this.password,
+          }),
+        });
 
-			const result = await response.json();
+        const result = await response.json();
 
-			if (!response.ok || !result.success) {
-			this.errorMessage = result.message || "Login failed.";
-			setTimeout(() => (this.errorMessage = ""), 3000);
-			return;
-			}
+        if (!response.ok || !result.success) {
+          this.errorMessage = result.message || "Login failed.";
+          setTimeout(() => (this.errorMessage = ""), 3000);
+          return;
+        }
 
-			this.successMessage = result.message || "Login successful!";
-				setTimeout(() => {
-			const baseUrl = window.location.origin + window.location.pathname.split('/').slice(0, 3).join('/');
-			window.location.href = `${baseUrl}/dashboard`; // redirect dynamically
-			}, 1000); // adjust delay as needed
-		} catch (err) {
-			this.errorMessage = "Something went wrong. Please try again.";
-			setTimeout(() => (this.errorMessage = ""), 3000);
-		}
-		},
-	},
-	};
+        this.successMessage = result.message || "Login successful!";
+        setTimeout(() => {
+          window.location.href = `${baseUrl}/dashboard`; // redirect to dashboard
+        }, 1000);
+      } catch (err) {
+        this.errorMessage = "Something went wrong. Please try again.";
+        setTimeout(() => (this.errorMessage = ""), 3000);
+      }
+    }
+  }
+};
 </script>
+
 
 
