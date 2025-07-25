@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <title>Admin Panel</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-@php
-    $basePath = '/laravel/inventory-management/public';
-@endphp
     {{-- Use Laravel asset helper correctly --}}
   
 <script src="{{ asset('public/assets/js/settings.js') }}"></script>
@@ -15,12 +12,22 @@
 <body>
 
     @if ($defaultComponent === 'Login')
+    @if (session('status'))
+    <script>
+        window.statusMessage = @json(session('status'));
+    </script>
+        @endif
         @vite('resources/js/login.js')
         <div id="login" data-component="Login"></div>
     @else
         @vite('resources/js/app.js')
+        @if (session('status'))
+       <script>
+          window.statusMessage = @json(session('status'));
+       </script>
+      @endif
         <div id="app" class="wrapper" data-component="{{ $defaultComponent }}"></div>
-    @endif
+      @endif
 
     {{-- FOOTER: Custom JS --}}
     <script src="{{ asset('public/assets/js/app.js') }}"></script>

@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Role;
 
 class AuthController extends Controller
 {
@@ -16,7 +18,8 @@ class AuthController extends Controller
      * @return \Illuminate\View\View
      */
     public function loadLogin()
-    {
+    {   
+        session()->flash('message', 'Please login to continue');
         return view('layouts.app', ['defaultComponent' => 'Login']);
     }
 
@@ -30,7 +33,24 @@ class AuthController extends Controller
     {
         return view('layouts.app', ['defaultComponent' => 'Register']);
     }
-
+     /**
+     * Load the registration view with the Role Vue component.
+     * This renders the base layout and instructs Vue to load the Role component.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function showRoleForm()
+    {
+        return view('layouts.app', ['defaultComponent' => 'Role']);
+    }
+        /**
+     * Return the list of users as JSON for Vue to consume via fetch/AJAX.
+     */
+    public function getListUsers()
+    {
+        $users = User::select('id', 'name')->get(); // Only return required fields
+        return response()->json($users);
+    }
     /**
      * Handle user registration.
      * Validates input, creates a new user, and returns a JSON response.
@@ -134,6 +154,18 @@ public function loginUser(Request $request)
             'message' => 'Server error: ' . $e->getMessage(),
         ], 500);
     }
+}
+// Logout function
+public function logout(Request $request)
+{
+    Auth::logout(); // Logs out the current user
+
+    // Clear all session data
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    // Redirect to login page (with flash message if needed)
+    return redirect()->route('login')->with('status', 'Logged out successfully.');
 }
 
 

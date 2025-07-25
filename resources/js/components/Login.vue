@@ -7,6 +7,7 @@
             <div class="d-table-cell align-middle">
               <div class="text-center mt-4">
                 <h1 class="h2">Welcome back</h1>
+                
                 <p class="lead">Sign in to your account to continue</p>
               </div>
 
@@ -16,7 +17,9 @@
                     <div class="text-center mb-3">
                       <!-- <img src="/assets/img/avatars/avatar.jpg" alt="User Avatar" class="img-fluid rounded-circle" width="132" height="132" /> -->
                     </div>
-
+                    <div v-if="statusMessage" class="alert alert-success text-center p-3">
+                          {{ statusMessage }}
+                      </div>
                     <!-- Success/Error Message -->
                     <div v-if="errorMessage" class="alert alert-danger text-center p-3">{{ errorMessage }}</div>
                     <div v-if="successMessage" class="alert alert-success text-center p-3">{{ successMessage }}</div>
@@ -68,61 +71,79 @@
 </template>
 
 <script>
-	export default {
-	name: "Login",
-	data() {
-		return {
-		email: "",
-		password: "",
-		errorMessage: "",
-		successMessage: "",
-		};
-	},
-	methods: {
-		async submitLogin() {
-		const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+export default {
+  name: "Login",
+  data() {
+    return {
+      email: "",
+      password: "",
+      errorMessage: "",
+      successMessage: ""
+    };
+  },
+  mounted() {
+    const params = new URLSearchParams(window.location.search);
+    const rawMessage = params.get('message');
 
-		if (!csrfToken) {
-			this.errorMessage = "CSRF token missing.";
-			setTimeout(() => (this.errorMessage = ""), 3000);
-			return;
-		}
+    if (rawMessage) {
+      //  Set successMessage from URL
+      this.successMessage = decodeURIComponent(rawMessage);
 
-		try {
-	
-			const baseUrl = window.location.origin + window.location.pathname.split('/').slice(0, 3).join('/');
-			const response = await fetch(`${baseUrl}/login-user`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				"X-CSRF-TOKEN": csrfToken,
-			},
-			body: JSON.stringify({
-				email: this.email,
-				password: this.password,
-			}),
-			});
+      //  Auto-hide after 3 seconds
+      setTimeout(() => {
+        this.successMessage = "";
+      }, 3000);
 
-			const result = await response.json();
+      // Clean the URL
+      const cleanUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
+    }
+  },
+  methods: {
+    async submitLogin() {
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-			if (!response.ok || !result.success) {
-			this.errorMessage = result.message || "Login failed.";
-			setTimeout(() => (this.errorMessage = ""), 3000);
-			return;
-			}
+      if (!csrfToken) {
+        this.errorMessage = "CSRF token missing.";
+        setTimeout(() => (this.errorMessage = ""), 3000);
+        return;
+      }
 
-			this.successMessage = result.message || "Login successful!";
-				setTimeout(() => {
-			const baseUrl = window.location.origin + window.location.pathname.split('/').slice(0, 3).join('/');
-			window.location.href = `${baseUrl}/dashboard`; // redirect dynamically
-			}, 1000); // adjust delay as needed
-		} catch (err) {
-			this.errorMessage = "Something went wrong. Please try again.";
-			setTimeout(() => (this.errorMessage = ""), 3000);
-		}
-		},
-	},
-	};
+      try {
+        const baseUrl = window.location.origin + window.location.pathname.split('/').slice(0, 3).join('/');
+
+        const response = await fetch(`${baseUrl}/login-user`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": csrfToken,
+          },
+          body: JSON.stringify({
+            email: this.email,
+            password: this.password,
+          }),
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+          this.errorMessage = result.message || "Login failed.";
+          setTimeout(() => (this.errorMessage = ""), 3000);
+          return;
+        }
+
+        this.successMessage = result.message || "Login successful!";
+        setTimeout(() => {
+          window.location.href = `${baseUrl}/dashboard`; // redirect to dashboard
+        }, 1000);
+      } catch (err) {
+        this.errorMessage = "Something went wrong. Please try again.";
+        setTimeout(() => (this.errorMessage = ""), 3000);
+      }
+    }
+  }
+};
 </script>
+
 
 

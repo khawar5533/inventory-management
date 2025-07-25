@@ -152,7 +152,7 @@
 								<a class="dropdown-item" href="#"><i class="align-middle me-1 fas fa-fw fa-chart-pie"></i> Analytics</a>
 								<a class="dropdown-item" href="#"><i class="align-middle me-1 fas fa-fw fa-cogs"></i> Settings</a>
 								<div class="dropdown-divider"></div>
-								<a class="dropdown-item" href="#"><i class="align-middle me-1 fas fa-fw fa-arrow-alt-circle-right"></i> Sign out</a>
+								<a class="dropdown-item" href="javascript:" @click="logoutUser"><i class="align-middle me-1 fas fa-fw fa-arrow-alt-circle-right"></i> Sign out</a>
 							</div>
 						</li>
 					</ul>
@@ -161,6 +161,42 @@
 </template>
 <script>
 export default {
-  name: 'Header'
-}
+  name: 'Header',
+  methods: {
+    async logoutUser() {
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+      if (!csrfToken) {
+        alert("CSRF token missing.");
+        return;
+      }
+
+      const basePath = window.location.pathname.split('/').slice(0, 3).join('/');
+      const logoutUrl = `${basePath}/logout`;
+
+      try {
+        const response = await fetch(logoutUrl, {
+          method: 'POST',
+          headers: {
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json', // hint to Laravel not to return HTML
+            'Content-Type': 'application/json'
+          }
+        });
+
+        // ✅ Laravel returns 302, fetch does NOT auto-follow it with session
+        // So we redirect manually
+        if (response.status === 200 || response.status === 204 || response.redirected) {
+          window.location.href = `${basePath}/?message=${encodeURIComponent('You have been logged out.')}`;
+
+        } else {
+          alert("Logout failed.");
+        }
+      } catch (error) {
+        alert("Logout error.");
+      }
+    }
+  }
+};
+
 </script>
