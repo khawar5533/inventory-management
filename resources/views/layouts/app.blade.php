@@ -4,10 +4,6 @@
     <meta charset="UTF-8">
     <title>Admin Panel</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    
-@php
-    $basePath = '/laravel/inventory-management/public';
-@endphp
     {{-- Use Laravel asset helper correctly --}}
   
 <script src="{{ asset('public/assets/js/settings.js') }}"></script>

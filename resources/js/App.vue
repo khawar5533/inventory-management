@@ -14,6 +14,7 @@ import Sidebar from './components/Sidebar.vue'
 import Header from './components/Header.vue'
 import Content from './components/Content.vue'
 import Register from './components/Register.vue'
+import Role from './components/Role.vue'
 import Login from './components/Login.vue'
 import Footer from './components/Footer.vue'
 
@@ -24,6 +25,7 @@ export default {
     Header,
     Content,
     Register,
+    Role,
     Login,
     Footer
   },

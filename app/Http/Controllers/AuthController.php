@@ -32,7 +32,24 @@ class AuthController extends Controller
     {
         return view('layouts.app', ['defaultComponent' => 'Register']);
     }
-
+     /**
+     * Load the registration view with the Role Vue component.
+     * This renders the base layout and instructs Vue to load the Role component.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function showRoleForm()
+    {
+        return view('layouts.app', ['defaultComponent' => 'Role']);
+    }
+        /**
+     * Return the list of users as JSON for Vue to consume via fetch/AJAX.
+     */
+    public function getListUsers()
+    {
+        $users = User::select('id', 'name')->get(); // Only return required fields
+        return response()->json($users);
+    }
     /**
      * Handle user registration.
      * Validates input, creates a new user, and returns a JSON response.
@@ -137,7 +154,7 @@ public function loginUser(Request $request)
         ], 500);
     }
 }
-
+// Logout function
 public function logout(Request $request)
 {
     Auth::logout(); // Logs out the current user
@@ -149,5 +166,7 @@ public function logout(Request $request)
     // Redirect to login page (with flash message if needed)
     return redirect()->route('login')->with('status', 'Logged out successfully.');
 }
+
+
 
 }
