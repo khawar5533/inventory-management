@@ -28,6 +28,7 @@
 							<li class='sidebar-link' @click="$emit('change-component', 'Register')">Register</li>
 							<li class='sidebar-link' @click="$emit('change-component', 'Role')">AddRole</li>
 							<li class='sidebar-link' @click="$emit('change-component', 'UserRole')">Assign Role</li>
+							<li class='sidebar-link' @click="$emit('change-component', 'User-Permission')">Assign Permission</li>
 							
 
 							<li class='sidebar-link' @click="$emit('change-component', 'Permission')">AddPermission</li>

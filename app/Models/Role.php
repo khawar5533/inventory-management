@@ -13,6 +13,11 @@ class Role extends Model
     {
          return $this->belongsToMany(User::class, 'role_user', 'role_id', 'user_id');
     }
+    // Make many to many relation ship with pemission table
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class);
+    }
 
 }
 
