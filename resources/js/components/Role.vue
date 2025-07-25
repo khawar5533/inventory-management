@@ -3,7 +3,7 @@
     <div class="card">
       <div class="card-header">
         <h5 class="card-title">Add User Role</h5>
-        <h6 class="card-subtitle text-muted">Assign role for users</h6>
+        <h6 class="card-subtitle text-muted">Add role for users</h6>
       </div>
       <div class="card-body">
         <!-- Alerts -->
