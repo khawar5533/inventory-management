@@ -10,6 +10,7 @@ class PermissionController extends Controller
     {   
         return view('layouts.app', ['defaultComponent' => 'Permission']);
     }
+    
     public function storePermissions(Request $request)
     {
             $request->validate([
@@ -33,9 +34,14 @@ class PermissionController extends Controller
             }
 
             // If there are duplicates, return an error response
-            if (!empty($duplicates)) {
+           if (!empty($duplicates)) {
+                // Replace underscores with spaces in duplicate names
+                $readableDuplicates = array_map(function ($item) {
+                    return str_replace('_', ' ', $item);
+                }, $duplicates);
+
                 return response()->json([
-                    'message' => 'The following permissions already exist: ' . implode(', ', $duplicates),
+                    'message' => 'The following permissions already exist: ' . implode(', ', $readableDuplicates),
                     'created' => $created,
                 ], 400);
             }
