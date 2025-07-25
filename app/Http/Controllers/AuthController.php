@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Role;
 
 class AuthController extends Controller
 {
@@ -166,7 +167,6 @@ public function logout(Request $request)
     // Redirect to login page (with flash message if needed)
     return redirect()->route('login')->with('status', 'Logged out successfully.');
 }
-
 
 
 }

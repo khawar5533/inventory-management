@@ -17,6 +17,7 @@ import Register from './components/Register.vue'
 import Role from './components/Role.vue'
 import Permission from './components/Permission.vue'
 import Login from './components/Login.vue'
+import UserRole from './components/UserRole.vue'
 import Footer from './components/Footer.vue'
 
 export default {
@@ -28,6 +29,7 @@ export default {
     Register,
     Role,
     Permission,
+    UserRole,
     Login,
     Footer
   },
