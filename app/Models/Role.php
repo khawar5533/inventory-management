@@ -18,7 +18,7 @@ class Role extends Model
     {
         return $this->belongsToMany(Permission::class);
     }
-   // returm role id
+   // return role id
     public static function getRolesByUserId($userId)
     {
         return DB::table('role_user')

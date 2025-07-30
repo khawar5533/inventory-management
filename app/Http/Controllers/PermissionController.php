@@ -138,7 +138,7 @@ class PermissionController extends Controller
 
         return response()->json(['message' => 'Permissions assigned successfully.']);
     }
-
+    // show permissions
     public function getRolePermissions($roleId)
     {
         $permissions = DB::table('permissions')
@@ -150,7 +150,7 @@ class PermissionController extends Controller
 
         return response()->json(['permissions' => $permissions]);
     }
-
+  // delete permissions 
      public function softDelete($id)
     {
         $permission = Permission::findOrFail($id);
