@@ -32,6 +32,7 @@
 							
 
 							<li class='sidebar-link' @click="$emit('change-component', 'Permission')">AddPermission</li>
+							<li class='sidebar-link' @click="$emit('change-component', 'Show-Permission')">Show Permission</li>
 							<li class="sidebar-item"><a class='sidebar-link' href='dashboard-analytics.html'>Analytics</a></li>
 							<li class="sidebar-item"><a class='sidebar-link' href='dashboard-e-commerce.html'>E-commerce</a></li>
 						</ul>

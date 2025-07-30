@@ -17,9 +17,12 @@ Route::middleware(['auth'])->group(function () {
   Route::get('userrole', [RoleController ::class, 'loadRoleUserForm']);
   Route::post('/logout', [AuthController::class, 'logout'])->name('logout');//Logout
   Route::post('/assign-role/{userId}', [RoleController::class, 'assignRole']);
+   Route::get('/show-permission', [RoleController ::class, 'loadShowPermission']);
   Route::get('/get-grouped-permissions', [PermissionController::class, 'getGroupedPermissions']);
   Route::post('/assign-permissions-to-role', [PermissionController::class, 'assignPermissionsToRole']);
   Route::get('/get-role-permissions/{roleId}', [PermissionController::class, 'getRolePermissions']);
+  Route::get('/get-user-role-ids', [RoleController::class, 'getUserRoleIds']);
+  Route::post('/soft-delete-permission/{id}', [PermissionController::class, 'softDelete']);
 
 });
 
