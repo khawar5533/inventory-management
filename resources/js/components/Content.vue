@@ -3,7 +3,7 @@
 
 					<div class="header">
 						<h1 class="header-title">
-							Welcome back, Linda!
+							Welcome back, {{ user.name }}!
 						</h1>
 						<p class="header-subtitle">You have 24 new messages and 5 new notifications.</p>
 					</div>
@@ -381,6 +381,11 @@
 
 <script>
 export default {
-  name: 'Login'
+  name: 'Login',
+  data() {
+    return {
+      user: window.authUser || {}, // ensures it's always an object
+    };
+  },
 };
 </script>

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\LocationController;
 
 Route::get('/', [AuthController::class, 'loadLogin'])->name('login'); // shows Login only
 Route::post('/login-user', [AuthController::class, 'loginUser']);
@@ -17,9 +18,20 @@ Route::middleware(['auth'])->group(function () {
   Route::get('userrole', [RoleController ::class, 'loadRoleUserForm']);
   Route::post('/logout', [AuthController::class, 'logout'])->name('logout');//Logout
   Route::post('/assign-role/{userId}', [RoleController::class, 'assignRole']);
+  Route::get('/show-permission', [RoleController ::class, 'loadShowPermission']);
   Route::get('/get-grouped-permissions', [PermissionController::class, 'getGroupedPermissions']);
   Route::post('/assign-permissions-to-role', [PermissionController::class, 'assignPermissionsToRole']);
   Route::get('/get-role-permissions/{roleId}', [PermissionController::class, 'getRolePermissions']);
+  Route::get('/get-user-role-ids', [RoleController::class, 'getUserRoleIds']);
+  Route::post('/soft-delete-permission/{id}', [PermissionController::class, 'softDelete']);
+  //Add Location
+  Route::get('/add-location', [LocationController::class, 'loadLocationForm']);
+
+  // In routes/api.php (for API endpoints)
+  Route::get('/locations', [LocationController::class, 'index']);
+  Route::post('/locations', [LocationController::class, 'store']);
+  Route::post('/locations/update/{id}', [LocationController::class, 'update']);
+  Route::delete('/locations/{id}', [LocationController::class, 'destroy']);
 
 });
 

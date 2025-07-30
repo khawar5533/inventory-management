@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Support\Facades\DB;
 class Role extends Model
 {
     protected $fillable = ['name'];
@@ -17,6 +17,13 @@ class Role extends Model
     public function permissions()
     {
         return $this->belongsToMany(Permission::class);
+    }
+   // return role id
+    public static function getRolesByUserId($userId)
+    {
+        return DB::table('role_user')
+            ->where('user_id', $userId)
+            ->pluck('role_id');
     }
 
 }

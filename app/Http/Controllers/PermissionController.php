@@ -138,6 +138,25 @@ class PermissionController extends Controller
 
         return response()->json(['message' => 'Permissions assigned successfully.']);
     }
+    // show permissions
+    public function getRolePermissions($roleId)
+    {
+        $permissions = DB::table('permissions')
+        ->join('permission_role', 'permissions.id', '=', 'permission_role.permission_id')
+        ->where('permission_role.role_id', $roleId)
+        ->whereNull('permissions.deleted_at') // Exclude soft-deleted
+        ->select('permissions.*')
+        ->get();
+
+        return response()->json(['permissions' => $permissions]);
+    }
+  // delete permissions 
+     public function softDelete($id)
+    {
+        $permission = Permission::findOrFail($id);
+        $permission->delete(); // Soft delete
+        return response()->json(['message' => 'Permission deleted Successfully.']);
+    }
 }
 
 

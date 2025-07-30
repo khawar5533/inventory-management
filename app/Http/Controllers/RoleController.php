@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Role;
 use App\Models\User;
@@ -26,6 +27,17 @@ class RoleController extends Controller
     public function loadRoleUserForm()
     {
         return view('layouts.app', ['defaultComponent' => 'UserRole']);
+    }
+
+    /**
+     * Load the component responsible for show permissions to users.
+     */
+    public function loadShowPermission()
+    { 
+        // Pass user ID and role IDs to the Blade view
+            return view('layouts.app', [
+                'defaultComponent' => 'Show-Permission',
+            ]);
     }
     //load role list
     public function getListRoles()
@@ -64,6 +76,16 @@ class RoleController extends Controller
         return response()->json([
             'message' => 'Role assigned successfully',
             'user' => $user->load('roles'),
+        ]);
+    }
+
+    public function getUserRoleIds()
+    {
+        $userId = Auth::id();
+        $roleIds = Role::getRolesByUserId($userId);
+
+        return response()->json([
+            'roleIds' => $roleIds,
         ]);
     }
 

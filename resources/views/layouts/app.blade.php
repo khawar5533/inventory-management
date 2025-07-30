@@ -35,7 +35,7 @@
     <script>
         window.baseUrl = "{{ url('/') }}";
         window.defaultComponent = @json($defaultComponent ?? 'Login');
-        window.BASE_URL = "{{ url('/') }}";
+        window.authUser = @json(Auth::user());
     </script>
 
     {{-- Your charts and map JS remain unchanged below --}}
