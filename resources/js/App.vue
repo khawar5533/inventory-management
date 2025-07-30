@@ -20,6 +20,8 @@ import Login from './components/Login.vue'
 import UserRole from './components/UserRole.vue'
 import ShowPermission from './components/ShowPermission.vue'
 import UserPermission from './components/User-Permission.vue'
+// include location
+import AddLocation from './components/Add-Location.vue'
 import Footer from './components/Footer.vue'
 
 export default {
@@ -34,6 +36,7 @@ export default {
     UserRole,
     ShowPermission,
     UserPermission,
+    AddLocation,
     Login,
     Footer
   },
