@@ -185,7 +185,7 @@ export default {
   name: 'Sidebar',
   methods: {
     assetPath(path) {
-      return `${window.BASE_URL}/${path}`;
+      return `${window.baseUrl}/${path}`;
     }
  }
 }
