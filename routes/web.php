@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\FloorController;
 
 Route::get('/', [AuthController::class, 'loadLogin'])->name('login'); // shows Login only
 Route::post('/login-user', [AuthController::class, 'loginUser']);
@@ -26,12 +27,18 @@ Route::middleware(['auth'])->group(function () {
   Route::post('/soft-delete-permission/{id}', [PermissionController::class, 'softDelete']);
   //Add Location
   Route::get('/add-location', [LocationController::class, 'loadLocationForm']);
-
-  // In routes/api.php (for API endpoints)
+  Route::get('/floor', [FloorController::class, 'loadFooterForm']);
+//
+  // Location
   Route::get('/locations', [LocationController::class, 'index']);
   Route::post('/locations', [LocationController::class, 'store']);
   Route::post('/locations/update/{id}', [LocationController::class, 'update']);
   Route::delete('/locations/{id}', [LocationController::class, 'destroy']);
+  //Floor
+  Route::get('/floors', [FloorController::class, 'index'])->name('floors.index');
+  Route::post('/add-floor', [FloorController::class, 'store'])->name('floors.store');
+  Route::post('/floors/update/{id}', [FloorController::class, 'update'])->name('floors.update'); // Update (POST instead of PUT)
+  Route::delete('/floors/{id}', [FloorController::class, 'destroy'])->name('floors.destroy');  
 
 });
 
