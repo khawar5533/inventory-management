@@ -1,5 +1,13 @@
 <template>
   <div>
+    <!-- Alerts -->
+    <div v-if="successMessage" class="alert alert-success p-3">
+      {{ successMessage }}
+    </div>
+    <div v-if="errorMessage" class="alert alert-danger p-3">
+      {{ errorMessage }}
+    </div>
+
     <!-- Form Section -->
     <div class="col-12 col-xl-12">
       <div class="card">
@@ -8,7 +16,7 @@
           <h6 class="card-subtitle text-muted">Enter location details.</h6>
         </div>
         <div class="card-body">
-          <form @submit.prevent="addLocation">
+          <form @submit.prevent="isEditing ? updateLocation() : addLocation()">
             <div class="mb-3">
               <label class="form-label">Name</label>
               <input v-model="form.name" type="text" class="form-control" placeholder="Location Name">
@@ -33,8 +41,8 @@
               <label class="form-label">Country</label>
               <input v-model="form.country" type="text" class="form-control" placeholder="Country">
             </div>
-            <button v-if="!isEditing" type="submit" class="btn btn-primary" @click.prevent="addLocation">Add</button>
-            <button v-else type="submit" class="btn btn-success" @click.prevent="updateLocation">Update</button>
+            <button v-if="!isEditing" type="submit" class="btn btn-primary">Add</button>
+            <button v-else type="submit" class="btn btn-success">Update</button>
           </form>
         </div>
       </div>
@@ -56,7 +64,6 @@
               <th>State</th>
               <th>Country</th>
               <th>ZIP</th>
-
               <th>Actions</th>
             </tr>
           </thead>
@@ -69,9 +76,9 @@
               <td>{{ location.country }}</td>
               <td>{{ location.zip_code }}</td>
               <td class="table-action">
-               <a href="#" @click.prevent="editLocation(index)">
-                <i class="align-middle fas fa-fw fa-pen"></i>
-              </a>
+                <a href="#" @click.prevent="editLocation(index)">
+                  <i class="align-middle fas fa-fw fa-pen"></i>
+                </a>
                 <a href="#" @click.prevent="deleteLocation(index)">
                   <i class="fas fa-trash text-danger"></i>
                 </a>
@@ -93,7 +100,7 @@ export default {
   data() {
     return {
       form: {
-        id: null, // Include ID for edit mode
+        id: null,
         name: '',
         address: '',
         city: '',
@@ -102,7 +109,9 @@ export default {
         country: ''
       },
       locations: [],
-      isEditing: false // Track whether editing or not
+      isEditing: false,
+      successMessage: '',
+      errorMessage: ''
     };
   },
   mounted() {
@@ -114,14 +123,14 @@ export default {
         const response = await fetch(`${window.baseUrl}/locations`);
         this.locations = await response.json();
       } catch (error) {
-        console.error("Error loading locations:", error);
+        this.errorMessage = 'Error loading locations.';
+        this.clearMessagesAfterDelay();
       }
     },
 
     async addLocation() {
       try {
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
         const response = await fetch(`${window.baseUrl}/locations`, {
           method: 'POST',
           headers: {
@@ -138,18 +147,21 @@ export default {
 
         const result = await response.json();
         this.locations.unshift(result.location);
+        this.successMessage = 'Location added successfully!';
         this.resetForm();
       } catch (error) {
-        console.error("Error saving location:", error);
+        this.errorMessage = 'Error adding location.';
+        console.error(error);
+      } finally {
+        this.clearMessagesAfterDelay();
       }
     },
 
     async updateLocation() {
       try {
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
         const response = await fetch(`${window.baseUrl}/locations/update/${this.form.id}`, {
-          method: 'POST', // Using POST instead of PUT
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
@@ -164,21 +176,24 @@ export default {
 
         const result = await response.json();
 
-        // Update the local array
         const index = this.locations.findIndex(l => l.id === this.form.id);
         if (index !== -1) {
-          this.$set(this.locations, index, result.location);
+          this.locations.splice(index, 1, result.location);
         }
 
+        this.successMessage = 'Location updated successfully!';
         this.resetForm();
       } catch (error) {
-        console.error("Error updating location:", error);
+        this.errorMessage = 'Error updating location.';
+        console.error(error);
+      } finally {
+        this.clearMessagesAfterDelay();
       }
     },
 
     editLocation(index) {
       const location = this.locations[index];
-      this.form = { ...location }; // Copy fields including ID
+      this.form = { ...location };
       this.isEditing = true;
     },
 
@@ -187,7 +202,6 @@ export default {
 
       try {
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
         const response = await fetch(`${window.baseUrl}/locations/${location.id}`, {
           method: 'DELETE',
           headers: {
@@ -198,14 +212,16 @@ export default {
         });
 
         if (!response.ok) {
-          const errorText = await response.text();
-          console.error("Server error:", errorText);
           throw new Error(`Delete failed with status ${response.status}`);
         }
 
         this.locations.splice(index, 1);
+        this.successMessage = 'Location deleted successfully!';
       } catch (error) {
-        console.error("Delete failed:", error);
+        this.errorMessage = 'Error deleting location.';
+        console.error(error);
+      } finally {
+        this.clearMessagesAfterDelay();
       }
     },
 
@@ -220,9 +236,14 @@ export default {
         country: ''
       };
       this.isEditing = false;
+    },
+
+    clearMessagesAfterDelay() {
+      setTimeout(() => {
+        this.successMessage = '';
+        this.errorMessage = '';
+      }, 3000);
     }
   }
 };
 </script>
-
-
