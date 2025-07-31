@@ -41,6 +41,7 @@
 							<li class='sidebar-link' @click="$emit('change-component', 'Add-Location')">Add Location</li>
 						    <li class='sidebar-link' @click="$emit('change-component', 'Floor')">Add Floor</li>
 							<li class='sidebar-link' @click="$emit('change-component', 'Room')">Add Room</li>
+							<li class='sidebar-link' @click="$emit('change-component', 'Rack')">Add Rack</li>
 						</ul>
 					</li>
 
