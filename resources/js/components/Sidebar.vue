@@ -40,13 +40,7 @@
 						<ul id="auth" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
 							<li class='sidebar-link' @click="$emit('change-component', 'Add-Location')">Add Location</li>
 						    <li class='sidebar-link' @click="$emit('change-component', 'Floor')">Add Floor</li>
-							<!-- <li class="sidebar-item"><a class='sidebar-link' href='pages-sign-up.html'>Sign
-									Up</a></li>
-							<li class="sidebar-item"><a class='sidebar-link' href='pages-reset-password.html'>Reset Password</a></li>
-							<li class="sidebar-item"><a class='sidebar-link' href='pages-404.html'>404
-									Page</a></li>
-							<li class="sidebar-item"><a class='sidebar-link' href='pages-500.html'>500
-									Page</a></li> -->
+							<li class='sidebar-link' @click="$emit('change-component', 'Room')">Add Room</li>
 						</ul>
 					</li>
 

@@ -6,6 +6,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\FloorController;
+use App\Http\Controllers\RoomController;
 
 Route::get('/', [AuthController::class, 'loadLogin'])->name('login'); // shows Login only
 Route::post('/login-user', [AuthController::class, 'loginUser']);
@@ -38,7 +39,14 @@ Route::middleware(['auth'])->group(function () {
   Route::get('/floors', [FloorController::class, 'index'])->name('floors.index');
   Route::post('/add-floor', [FloorController::class, 'store'])->name('floors.store');
   Route::post('/floors/update/{id}', [FloorController::class, 'update'])->name('floors.update'); // Update (POST instead of PUT)
-  Route::delete('/floors/{id}', [FloorController::class, 'destroy'])->name('floors.destroy');  
+  Route::delete('/floors/{id}', [FloorController::class, 'destroy'])->name('floors.destroy'); 
+  //Room
+  Route::get('/room', [RoomController::class, 'loadRoomForm']); 
+  Route::get('/floor-list', [RoomController::class, 'list']);
+  Route::get('/room-list', [RoomController::class, 'getRoomList']);
+  Route::post('/add-room', [RoomController::class, 'store']);
+  Route::match(['put', 'post'], '/update-room/{room}', [RoomController::class, 'update']);
+  Route::delete('/delete-room/{room}', [RoomController::class, 'destroy']);
 
 });
 
