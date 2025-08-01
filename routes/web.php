@@ -9,6 +9,7 @@ use App\Http\Controllers\FloorController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\RackController;
 use App\Http\Controllers\BoxController;
+use App\Http\Controllers\CategoryController;
 
 Route::get('/', [AuthController::class, 'loadLogin'])->name('login'); // shows Login only
 Route::post('/login-user', [AuthController::class, 'loginUser']);
@@ -57,13 +58,19 @@ Route::middleware(['auth'])->group(function () {
   Route::post('/racks/{id}', [RackController::class, 'update']);
   Route::post('/racks/{id}/delete', [RackController::class, 'destroy']);
   //box 
-   Route::get('/box', [BoxController::class, 'loadBoxForm']);
-
+  Route::get('/box', [BoxController::class, 'loadBoxForm']);
   Route::post('/add-box', [BoxController::class, 'store']);
   Route::post('/update-box/{box}', [BoxController::class, 'update']);
   Route::post('/delete-box/{id}', [BoxController::class, 'destroy']);
   Route::get('/box-list', [BoxController::class, 'boxList']);
   Route::get('/rack-list', [RackController::class, 'index']); 
+  //category
+  Route::get('/category', [CategoryController::class, 'loadCategoryForm']); 
+  Route::get('/category-list', [CategoryController::class, 'index']);
+  Route::post('/add-category', [CategoryController::class, 'store']);
+  Route::post('/update-category/{category}', [CategoryController::class, 'update']);
+  Route::delete('/delete-category/{category}', [CategoryController::class, 'destroy']);
+
 });
 
 Route::get('/get-users', [AuthController::class, 'getListUsers']);

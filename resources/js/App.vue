@@ -26,6 +26,7 @@ import AddFloor from './components/Add-Floor.vue'
 import AddRoom from './components/Add-Room.vue'
 import Rack from './components/Rack.vue'
 import Box from './components/Box.vue'
+import Category from './components/Category.vue'
 import Footer from './components/Footer.vue'
 
 export default {
@@ -45,6 +46,7 @@ export default {
     AddRoom,
     Rack,
     Box,
+    Category,
     Login,
     Footer
   },
