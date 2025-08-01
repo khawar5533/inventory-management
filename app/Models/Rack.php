@@ -8,7 +8,7 @@ class Rack extends Model
 {
     use SoftDeletes;
     protected $fillable = [ 'room_id','label'];
-
+    protected $dates = ['deleted_at'];
     public function room()
     {
         return $this->belongsTo(Room::class);

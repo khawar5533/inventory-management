@@ -94,6 +94,7 @@ export default {
     };
   },
   mounted() {
+    this.fetchRooms();
     this.fetchRacks(); // won't show error on auto-load
   },
   methods: {
@@ -149,49 +150,76 @@ export default {
     editRack(index) {
       this.isEditing = true;
       this.editIndex = index;
-      this.form = { ...this.racks[index] };
-    },
-    async updateRack() {
-      const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-      try {
+       const rack = this.racks[index];
+       this.form = {
+       id: rack.id,
+        room_id: rack.room_id || rack.room?.id || '',
+        label: rack.label
+        };
+      },
+      async updateRack() {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         const rackId = this.racks[this.editIndex].id;
-        const response = await fetch(`${window.baseUrl}/racks/${rackId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': csrfToken
-          },
-          body: JSON.stringify(this.form)
-        });
 
-        if (!response.ok) throw new Error('Update failed');
+        try {
+          const response = await fetch(`${window.baseUrl}/racks/${rackId}`, {
+            method: 'POST', // using POST (not PUT)
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({
+              room_id: this.form.room_id,
+              label: this.form.label
+            })
+          });
 
-        const updatedRack = await response.json();
-        this.$set(this.racks, this.editIndex, updatedRack.rack || updatedRack);
-        this.successMessage = updatedRack.message || 'Rack updated successfully!';
-        this.clearMessages();
-        this.resetForm();
-      } catch (err) {
-        this.errorMessage = 'Error updating rack.';
-        this.clearMessages();
-        console.error(err);
-      }
-    },
-    async deleteRack(index) {
+          const result = await response.json();
+
+          if (!response.ok) {
+            throw new Error(result.message || 'Update failed');
+          }
+
+          // Vue 3 reactivity: direct assignment
+          this.racks[this.editIndex] = result.rack || result;
+
+          this.successMessage = result.message || 'Rack updated successfully!';
+          this.resetForm();
+
+          //  auto-hide success message
+          setTimeout(() => {
+            this.successMessage = '';
+          }, 3000);
+
+        } catch (err) {
+          this.errorMessage = err.message || 'Error updating rack.';
+          
+          //  auto-hide error message
+          setTimeout(() => {
+            this.errorMessage = '';
+          }, 3000);
+
+          console.error('Update error:', err);
+        }
+      },
+      async deleteRack(index) {
       const rackId = this.racks[index].id;
       const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
       if (!confirm('Are you sure you want to delete this rack?')) return;
 
       try {
-        const response = await fetch(`${window.baseUrl}/racks/${rackId}`, {
-          method: 'DELETE',
+        const response = await fetch(`${window.baseUrl}/racks/${rackId}/delete`, {
+          method: 'POST',
           headers: {
+            'Content-Type': 'application/json',
             'X-CSRF-TOKEN': csrfToken
           }
         });
 
         if (!response.ok) throw new Error('Delete failed');
 
+        // Remove rack from the list
         this.racks.splice(index, 1);
         this.successMessage = 'Rack deleted successfully!';
         this.clearMessages();

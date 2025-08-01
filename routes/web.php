@@ -49,10 +49,12 @@ Route::middleware(['auth'])->group(function () {
   Route::match(['put', 'post'], '/update-room/{room}', [RoomController::class, 'update']);
   Route::delete('/delete-room/{room}', [RoomController::class, 'destroy']);
   //rack
-Route::get('/get-rack', [RackController::class, 'index']);
- Route::get('/rack', [RackController::class, 'loadRackForm']); 
- Route::get('/rooms', [RackController::class, 'getRooms']);
- Route::post('/add-rack', [RackController::class, 'store']);
+  Route::get('/get-rack', [RackController::class, 'index']);
+  Route::get('/rack', [RackController::class, 'loadRackForm']); 
+  Route::get('/rooms', [RackController::class, 'getRooms']);
+  Route::post('/add-rack', [RackController::class, 'store']);
+  Route::post('/racks/{id}', [RackController::class, 'update']);
+  Route::post('/racks/{id}/delete', [RackController::class, 'destroy']);
 });
 
 Route::get('/get-users', [AuthController::class, 'getListUsers']);
