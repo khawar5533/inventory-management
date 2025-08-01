@@ -22,6 +22,10 @@ import ShowPermission from './components/ShowPermission.vue'
 import UserPermission from './components/User-Permission.vue'
 // include location
 import AddLocation from './components/Add-Location.vue'
+import AddFloor from './components/Add-Floor.vue'
+import AddRoom from './components/Add-Room.vue'
+import Rack from './components/Rack.vue'
+import Box from './components/Box.vue'
 import Footer from './components/Footer.vue'
 
 export default {
@@ -37,6 +41,10 @@ export default {
     ShowPermission,
     UserPermission,
     AddLocation,
+    AddFloor,
+    AddRoom,
+    Rack,
+    Box,
     Login,
     Footer
   },
