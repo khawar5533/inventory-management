@@ -23,25 +23,19 @@
 							<i class="align-middle me-2 fas fa-fw fa-home"></i> <span class="align-middle">Dashboards</span>
 						</a>
 						<ul id="dashboards" class="sidebar-dropdown list-unstyled collapse show" data-bs-parent="#sidebar">
-							
 							<li class='sidebar-link' @click="$emit('change-component', 'Content')">Dashboard</li>
-							<li class='sidebar-link' @click="$emit('change-component', 'Register')">Register</li>
-							<li class='sidebar-link' @click="$emit('change-component', 'Role')">AddRole</li>
-							<li class='sidebar-link' @click="$emit('change-component', 'UserRole')">Assign Role</li>
-							<li class='sidebar-link' @click="$emit('change-component', 'User-Permission')">Assign Permission</li>
-							<li class='sidebar-link' @click="$emit('change-component', 'Permission')">AddPermission</li>
-							<li class='sidebar-link' @click="$emit('change-component', 'Show-Permission')">Show Permission</li>
 						</ul>
 					</li>
 					<li class="sidebar-item">
-						<a data-bs-target="#auth" data-bs-toggle="collapse" class="sidebar-link collapsed">
+						<a data-bs-target="#wharehouse" data-bs-toggle="collapse" class="sidebar-link collapsed">
 							<i class="align-middle me-2 fas fa-warehouse fa-sign-in-alt"></i> <span class="align-middle">WhareHouse</span>
 						</a>
-						<ul id="auth" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
+						<ul id="wharehouse" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
 							<li class='sidebar-link' @click="$emit('change-component', 'Add-Location')">Add Location</li>
 						    <li class='sidebar-link' @click="$emit('change-component', 'Floor')">Add Floor</li>
 							<li class='sidebar-link' @click="$emit('change-component', 'Room')">Add Room</li>
 							<li class='sidebar-link' @click="$emit('change-component', 'Rack')">Add Rack</li>
+							<li class='sidebar-link' @click="$emit('change-component', 'Box')">Add Box</li>
 						</ul>
 					</li>
 
@@ -51,15 +45,12 @@
 							<i class="align-middle me-2 fas fa-fw fa-sign-in-alt"></i> <span class="align-middle">Auth</span>
 						</a>
 						<ul id="auth" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
-							<li class="sidebar-item"><a class='sidebar-link' href='pages-sign-in.html'>Sign
-									In</a></li>
-							<li class="sidebar-item"><a class='sidebar-link' href='pages-sign-up.html'>Sign
-									Up</a></li>
-							<li class="sidebar-item"><a class='sidebar-link' href='pages-reset-password.html'>Reset Password</a></li>
-							<li class="sidebar-item"><a class='sidebar-link' href='pages-404.html'>404
-									Page</a></li>
-							<li class="sidebar-item"><a class='sidebar-link' href='pages-500.html'>500
-									Page</a></li>
+							<li class='sidebar-link' @click="$emit('change-component', 'Register')">Register</li>
+							<li class='sidebar-link' @click="$emit('change-component', 'Role')">AddRole</li>
+							<li class='sidebar-link' @click="$emit('change-component', 'UserRole')">Assign Role</li>
+							<li class='sidebar-link' @click="$emit('change-component', 'User-Permission')">Assign Permission</li>
+							<li class='sidebar-link' @click="$emit('change-component', 'Permission')">AddPermission</li>
+							<li class='sidebar-link' @click="$emit('change-component', 'Show-Permission')">Show Permission</li>
 						</ul>
 					</li>
 

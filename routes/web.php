@@ -8,6 +8,7 @@ use App\Http\Controllers\LocationController;
 use App\Http\Controllers\FloorController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\RackController;
+use App\Http\Controllers\BoxController;
 
 Route::get('/', [AuthController::class, 'loadLogin'])->name('login'); // shows Login only
 Route::post('/login-user', [AuthController::class, 'loginUser']);
@@ -55,6 +56,14 @@ Route::middleware(['auth'])->group(function () {
   Route::post('/add-rack', [RackController::class, 'store']);
   Route::post('/racks/{id}', [RackController::class, 'update']);
   Route::post('/racks/{id}/delete', [RackController::class, 'destroy']);
+  //box 
+   Route::get('/box', [BoxController::class, 'loadBoxForm']);
+
+  Route::post('/add-box', [BoxController::class, 'store']);
+  Route::post('/update-box/{box}', [BoxController::class, 'update']);
+  Route::post('/delete-box/{id}', [BoxController::class, 'destroy']);
+  Route::get('/box-list', [BoxController::class, 'boxList']);
+  Route::get('/rack-list', [RackController::class, 'index']); 
 });
 
 Route::get('/get-users', [AuthController::class, 'getListUsers']);
