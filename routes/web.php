@@ -10,6 +10,7 @@ use App\Http\Controllers\RoomController;
 use App\Http\Controllers\RackController;
 use App\Http\Controllers\BoxController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
 
 Route::get('/', [AuthController::class, 'loadLogin'])->name('login'); // shows Login only
 Route::post('/login-user', [AuthController::class, 'loginUser']);
@@ -70,6 +71,9 @@ Route::middleware(['auth'])->group(function () {
   Route::post('/add-category', [CategoryController::class, 'store']);
   Route::post('/update-category/{category}', [CategoryController::class, 'update']);
   Route::delete('/delete-category/{category}', [CategoryController::class, 'destroy']);
+  //product
+  Route::get('/product', [ProductController::class, 'loadProdyctForm']);
+  Route::post('/add-product', [ProductController::class, 'store']);
 
 });
 
