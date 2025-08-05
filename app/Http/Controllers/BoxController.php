@@ -115,6 +115,12 @@ class BoxController extends Controller
             'message' => 'Box deleted successfully.'
         ]);
     }
+    public function boxItems()
+    {
+        // Only select id and name
+        $boxes = Box::select('id', 'label')->get();
+        return response()->json($boxes);
+    }
 }
 
 

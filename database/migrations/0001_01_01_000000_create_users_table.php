@@ -149,7 +149,7 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->string('lot_number');
             $table->date('expiration_date')->nullable();
-            $table->enum('condition', ['New - sterile', 'Open box'])->default('New - sterile');
+            $table->enum('condition', ['new-sterile', 'open-box'])->default('new-sterile');
             $table->integer('quantity');
             $table->foreignId('box_id')->constrained()->onDelete('cascade');
             $table->dateTime('created_at');

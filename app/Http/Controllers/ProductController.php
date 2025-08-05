@@ -98,4 +98,10 @@ class ProductController extends Controller
             'message' => 'Product deleted successfully!',
         ]);
     }
+    public function productItems()
+    {
+        // Return only id and name (for dropdown)
+        $products = Product::select('id', 'name')->get();
+        return response()->json($products);
+    }
 }

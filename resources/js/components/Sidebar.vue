@@ -60,12 +60,12 @@
 						Elements
 					</li>
 					<li class="sidebar-item">
-						<a data-bs-target="#ui" data-bs-toggle="collapse" class="sidebar-link collapsed">
-							<i class="align-middle me-2 fas fa-fw fa-flask"></i> <span class="align-middle">User Interface</span>
+						<a data-bs-target="#mang" data-bs-toggle="collapse" class="sidebar-link collapsed">
+							<i class="align-middle me-2 fas fa-fw fa-briefcase"></i> <span class="align-middle">Management</span>
 						</a>
-						<ul id="ui" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
-							<li class="sidebar-item"><a class='sidebar-link' href='ui-alerts.html'>Alerts</a></li>
-							<li class="sidebar-item"><a class='sidebar-link' href='ui-buttons.html'>Buttons</a></li>
+						<ul id="mang" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
+							<li class='sidebar-link' @click="$emit('change-component', 'ProductLot')">Product Lot</li>
+							<!-- <li class="sidebar-item"><a class='sidebar-link' href='ui-buttons.html'>Buttons</a></li>
 							<li class="sidebar-item"><a class='sidebar-link' href='ui-cards.html'>Cards</a></li>
 							<li class="sidebar-item"><a class='sidebar-link' href='ui-general.html'>General</a></li>
 							<li class="sidebar-item"><a class='sidebar-link' href='ui-grid.html'>Grid</a>
@@ -76,7 +76,7 @@
 							<li class="sidebar-item"><a class='sidebar-link' href='ui-notifications.html'>Notifications</a></li>
 							<li class="sidebar-item"><a class='sidebar-link' href='ui-tabs.html'>Tabs</a>
 							</li>
-							<li class="sidebar-item"><a class='sidebar-link' href='ui-typography.html'>Typography</a></li>
+							<li class="sidebar-item"><a class='sidebar-link' href='ui-typography.html'>Typography</a></li> -->
 						</ul>
 					</li>
 					<li class="sidebar-item">

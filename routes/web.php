@@ -11,6 +11,7 @@ use App\Http\Controllers\RackController;
 use App\Http\Controllers\BoxController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductLotController;
 
 Route::get('/', [AuthController::class, 'loadLogin'])->name('login'); // shows Login only
 Route::post('/login-user', [AuthController::class, 'loginUser']);
@@ -77,7 +78,16 @@ Route::middleware(['auth'])->group(function () {
   Route::get('/product-list', [ProductController::class, 'productList']);
   Route::post('/update-product/{id}', [ProductController::class, 'updateProduct']);
   Route::delete('/delete-product/{id}', [ProductController::class, 'deleteProduct'])->name('products.delete');
+  //ProductLot
+ Route::get('/productlot', [ProductLotController::class, 'loadLotForm']);
+ Route::get('/lot-list', [ProductLotController::class, 'index']);
+ Route::post('/add-lot', [ProductLotController::class, 'store']);
+ Route::post('/update-lot/{id}', [ProductLotController::class, 'update']);
+ Route::delete('/delete-lot/{id}', [ProductLotController::class, 'destroy']);
 
+ Route::get('item-list', [ProductController::class, 'productItems']);
+ Route::get('/box-list', [BoxController::class, 'boxItems']);
+ 
 });
 
 Route::get('/get-users', [AuthController::class, 'getListUsers']);
