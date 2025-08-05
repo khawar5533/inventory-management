@@ -60,15 +60,49 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label>Weight (oz)</label>
-                                    <input type="number" step="0.01" v-model="form.weight_oz" class="form-control" />
+                                <label>Weight</label>
+                                <div class="d-flex gap-2">
+                                  <input
+                                    type="number"
+                                    step="0.01"
+                                    v-model="form.weight_value"
+                                    class="form-control"
+                                    placeholder="Enter weight"
+                                  />
+                                  <select v-model="form.weight_unit" class="form-select" style="max-width: 100px;">
+                                    <option value="oz">oz</option>
+                                    <option value="g">g</option>
+                                    <option value="kg">kg</option>
+                                    <option value="mg">mg</option>
+                                  </select>
                                 </div>
-
+                              </div>
                                 <div class="mb-3">
-                                    <label>Dimensions</label>
-                                    <input type="text" v-model="form.dimensions" class="form-control" />
+                                  <label>Dimensions (L × W × H)</label>
+                                  <div class="d-flex gap-2">
+                                    <input
+                                      type="number"
+                                      step="0.01"
+                                      v-model="form.length"
+                                      class="form-control"
+                                      placeholder="Length"
+                                    />
+                                    <input
+                                      type="number"
+                                      step="0.01"
+                                      v-model="form.width"
+                                      class="form-control"
+                                      placeholder="Width"
+                                    />
+                                    <input
+                                      type="number"
+                                      step="0.01"
+                                      v-model="form.height"
+                                      class="form-control"
+                                      placeholder="Height"
+                                    />
+                                  </div>
                                 </div>
-
                                 <div class="mb-3">
                                     <label>Comment</label>
                                     <textarea v-model="form.comment" class="form-control"></textarea>
@@ -102,29 +136,49 @@
             <div class="card-body">
                 <table class="table table-bordered mt-3">
                 <thead>
-                    <tr>
-                    <th>Name</th>
-                    <th>Category</th>
-                    <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-if="products.length === 0">
-                    <td colspan="3" class="text-center">No data available</td>
-                    </tr>
-                    <tr v-else v-for="product in products" :key="product.id">
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.category?.name || '—' }}</td>
-                    <td>
-                        <a href="#" @click.prevent="editProduct(product)">
-                        <i class="fas fa-pen"></i>
-                        </a>
-                        <a href="#" @click.prevent="deleteProduct(product.id)">
-                        <i class="fas fa-trash text-danger ms-2"></i>
-                        </a>
-                    </td>
-                    </tr>
-                </tbody>
+              <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Reference Number</th>
+                <th>RFID Code</th>
+                <th>Unit Description</th>
+                <th>Price</th>
+                <th>Weight</th>
+                <th>Dimensions</th>
+                <th>Comment</th>
+                <th>Reorder Threshold</th>
+                <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-if="products.length === 0">
+              <td colspan="11" class="text-center">No data available</td>
+            </tr>
+            <tr v-else v-for="product in products" :key="product.id">
+              <td>{{ product.name }}</td>
+              <td>{{ product.category?.name || '—' }}</td>
+              <td>{{ product.reference_number }}</td>
+              <td>{{ product.rfid_code }}</td>
+              <td>{{ product.unit_description }}</td>
+              <td>{{ product.price }}</td>
+              <td>
+                {{ product.weight_value }} {{ product.weight_unit }}
+              </td>
+              <td>
+                {{ product.length }} × {{ product.width }} × {{ product.height }}
+              </td>
+              <td>{{ product.comment }}</td>
+              <td>{{ product.reorder_threshold }}</td>
+              <td>
+                <a href="#" @click.prevent="editProduct(product)">
+                  <i class="fas fa-pen"></i>
+                </a>
+                <a href="#" @click.prevent="deleteProduct(product.id)">
+                  <i class="fas fa-trash text-danger ms-2"></i>
+                </a>
+              </td>
+            </tr>
+          </tbody>
                 </table>
             </div>
             </div>
@@ -237,21 +291,24 @@ export default {
         setTimeout(() => (this.errorMessage = ''), 3000);
       }
     },
-    resetForm() {
-      this.form = {
-        id: null,
-        name: '',
-        category_id: null,
-        reference_number: '',
-        rfid_code: '',
-        unit_description: '',
-        price: '',
-        weight_oz: '',
-        dimensions: '',
-        comment: '',
-        reorder_threshold: ''
-      };
-    }
+   resetForm() {
+  this.form = {
+    id: null,
+    name: '',
+    category_id: null,
+    reference_number: '',
+    rfid_code: '',
+    unit_description: '',
+    price: '',
+    weight_value: '',
+    weight_unit: 'g',
+    length: '',
+    width: '',
+    height: '',
+    comment: '',
+    reorder_threshold: ''
+  };
+}
   }
 };
 </script>

@@ -3,6 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Category; // Make sure this is included
 
 class Product extends Model
 {
@@ -15,14 +16,17 @@ class Product extends Model
         'rfid_code',
         'unit_description',
         'price',
-        'weight_oz',
-        'dimensions',
+        'weight_value',
+        'weight_unit',
+        'length',
+        'width',
+        'height',
         'comment',
         'reorder_threshold',
     ];
 
     public function category()
     {
-        return $this->belongsTo(ProductCategory::class, 'category_id');
+        return $this->belongsTo(Category::class, 'category_id');
     }
 }

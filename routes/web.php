@@ -41,7 +41,7 @@ Route::middleware(['auth'])->group(function () {
   Route::delete('/locations/{id}', [LocationController::class, 'destroy']);
   //Floor
   Route::get('/floors', [FloorController::class, 'index'])->name('floors.index');
-  Route::post('/add-floor', [FloorController::class, 'store'])->name('floors.store');
+  Route::post('/floors', [FloorController::class, 'store']);
   Route::post('/floors/update/{id}', [FloorController::class, 'update'])->name('floors.update'); // Update (POST instead of PUT)
   Route::delete('/floors/{id}', [FloorController::class, 'destroy'])->name('floors.destroy'); 
   //Room
@@ -74,6 +74,9 @@ Route::middleware(['auth'])->group(function () {
   //product
   Route::get('/product', [ProductController::class, 'loadProdyctForm']);
   Route::post('/add-product', [ProductController::class, 'store']);
+  Route::get('/product-list', [ProductController::class, 'productList']);
+  Route::post('/update-product/{id}', [ProductController::class, 'updateProduct']);
+  Route::delete('/delete-product/{id}', [ProductController::class, 'deleteProduct'])->name('products.delete');
 
 });
 
