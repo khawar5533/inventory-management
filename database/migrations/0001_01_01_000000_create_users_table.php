@@ -119,18 +119,27 @@ return new class extends Migration
             $table->softDeletes();
         });
 
-        Schema::create('products', function (Blueprint $table) {
+         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('category_id')->constrained('product_categories')->onDelete('cascade');
-            $table->string('reference_number')->unique();
+            $table->foreignId('category_id')->nullable()->constrained('product_categories')->onDelete('cascade');
+            $table->string('reference_number')->unique()->nullable();
             $table->string('rfid_code')->nullable();
-            $table->string('unit_description');
-            $table->decimal('price', 10, 2);
-            $table->decimal('weight_oz', 8, 2)->nullable();
-            $table->string('dimensions')->nullable();
+            $table->string('unit_description')->nullable();
+            $table->decimal('price', 10, 2)->nullable();
+
+            // Updated weight
+            $table->decimal('weight_value', 8, 2)->nullable();
+            $table->string('weight_unit', 10)->nullable();
+
+            // Updated dimensions
+            $table->decimal('length', 8, 2)->nullable();
+            $table->decimal('width', 8, 2)->nullable();
+            $table->decimal('height', 8, 2)->nullable();
+
             $table->text('comment')->nullable();
-            $table->integer('reorder_threshold')->default(0);
+            $table->integer('reorder_threshold')->default(0)->nullable();
+
             $table->timestamps();
             $table->softDeletes();
         });

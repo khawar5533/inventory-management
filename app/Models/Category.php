@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 class Category extends Model
 {
+    use SoftDeletes;
     protected $table = 'product_categories';
     protected $fillable = ['name', 'parent_id'];
-    use SoftDeletes;
     protected $dates = ['deleted_at'];
 
     public function parent()
@@ -19,5 +19,10 @@ class Category extends Model
     public function children()
     {
         return $this->hasMany(Category::class, 'parent_id');
+    }
+
+     public function products()
+    {
+        return $this->hasMany(Product::class);
     }
 }

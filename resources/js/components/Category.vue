@@ -61,10 +61,10 @@
                 <td>{{ cat.name }}</td>
                 <td>{{ cat.parent?.name || '—' }}</td>
                 <td>
-                  <a href="#" @click="editCategory(cat)">
+               <a href="#" @click.prevent="editCategory(cat)">
                   <i class="fas fa-pen"></i>
                 </a>
-                <a href="#" @click="deleteCategory(cat.id)">
+                <a href="#" @click.prevent="deleteCategory(cat.id)">
                   <i class="fas fa-trash text-danger ms-2"></i>
                 </a>
                 </td>
