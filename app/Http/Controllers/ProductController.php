@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Storage;
 class ProductController extends Controller
 {
     // Return all products (no relationships loaded)
@@ -36,9 +36,16 @@ class ProductController extends Controller
             'length'            => 'nullable|numeric|min:0',
             'width'             => 'nullable|numeric|min:0',
             'height'            => 'nullable|numeric|min:0',
+            'image'             => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // image validation
         ]);
 
         try {
+            // Handle image upload
+            if ($request->hasFile('image')) {
+                $path = $request->file('image')->store('products', 'public'); // stores in storage/app/public/products
+                $validated['image'] = $path;
+            }
+
             $product = Product::create($validated);
 
             return response()->json([
@@ -70,9 +77,24 @@ class ProductController extends Controller
             'height'            => 'nullable|numeric|min:0',
             'comment'           => 'nullable|string',
             'reorder_threshold' => 'nullable|numeric|min:0',
+            'image'             => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $product = Product::findOrFail($id);
+
+        // Handle image update
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($product->image && Storage::disk('public')->exists($product->image)) {
+                Storage::disk('public')->delete($product->image);
+            }
+
+            // Store new image
+            $path = $request->file('image')->store('products', 'public');
+            $validated['image'] = $path;
+        }
+
+        // Update product
         $product->update($validated);
 
         return response()->json([

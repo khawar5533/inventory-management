@@ -35,9 +35,15 @@
                 required
               />
             </div>
+            <div class="mt-3 d-flex gap-2">
+            <!-- Add / Update Button -->
             <button type="submit" class="btn btn-primary">
-              {{ isEditing ? 'Update' : 'Submit' }}
+              {{ isEditing ? 'Update Floor' : 'Add Floor' }}
             </button>
+
+            <!-- Cancel Button (only shown if editing) -->
+            <button v-if="form.id" type="button" @click="resetForm" class="btn btn-primary"> Cancel</button>
+          </div>
           </form>
         </div>
       </div>

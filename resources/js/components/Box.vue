@@ -29,7 +29,7 @@
               <input v-model="form.label" type="text" class="form-control" placeholder="Enter Box Name" required>
             </div>
             <button type="submit" class="btn btn-primary">{{ form.id ? 'Update' : 'Add' }} Box</button>
-            <button v-if="form.id" type="button" @click="resetForm" class="btn btn-secondary ms-2">Cancel</button>
+            <button v-if="form.id" type="button" @click="resetForm" class="btn btn-primary ms-2">Cancel</button>
           </form>
         </div>
       </div>
