@@ -4,6 +4,9 @@ import App from './App.vue'
 
 const appDiv = document.getElementById('app')
 if (appDiv) {
-  createApp(App).mount('#app')
+  const app = createApp(App)
+  // Register global $baseUrl from window.baseUrl
+  app.config.globalProperties.$baseUrl = window.baseUrl
+  app.mount('#app')
 }
 

@@ -8,7 +8,7 @@ class Category extends Model
 {
     use SoftDeletes;
     protected $table = 'product_categories';
-    protected $fillable = ['name', 'parent_id'];
+    protected $fillable = ['name', 'parent_id','image'];
     protected $dates = ['deleted_at'];
 
     public function parent()
