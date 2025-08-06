@@ -22,6 +22,7 @@ class Product extends Model
         'width',
         'height',
         'comment',
+        'image',
         'reorder_threshold',
     ];
 
