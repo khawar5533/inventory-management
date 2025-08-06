@@ -106,6 +106,7 @@ export default {
     return {
       categories: [],
       form: {
+        id: null,
         name: '',
         parent_id: null,
         image: null
@@ -123,11 +124,11 @@ export default {
     getImageUrl(imagePath) {
       return `${window.location.origin}/storage/${imagePath}`;
     },
+
     handleImageUpload(event) {
       const file = event.target.files[0];
       this.form.image = file;
 
-      // Preview
       if (file) {
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -138,6 +139,7 @@ export default {
         this.imagePreview = this.existingImageUrl;
       }
     },
+
     async fetchCategories() {
       try {
         const res = await fetch(`${window.baseUrl}/category-list`);
@@ -145,8 +147,10 @@ export default {
         this.categories = data;
       } catch (err) {
         this.errorMessage = 'Failed to load categories.';
+        setTimeout(() => (this.errorMessage = ''), 3000);
       }
     },
+
     async submitForm() {
       const isUpdate = !!this.form.id;
       const url = isUpdate
@@ -182,11 +186,15 @@ export default {
         this.successMessage = result.message || (isUpdate ? 'Category updated!' : 'Category added!');
         this.errorMessage = '';
 
-        this.form = { id: null, name: '', parent_id: null, image: null };
-        this.existingImageUrl = null;
-        this.imagePreview = null;
+        // Reset form
+        this.resetForm();
 
+        // Refresh list
         await this.fetchCategories();
+
+        // Optional full page reload
+        // window.location.reload();
+
         setTimeout(() => (this.successMessage = ''), 3000);
       } catch (err) {
         this.errorMessage = err.message || 'Failed to save category';
@@ -194,6 +202,7 @@ export default {
         setTimeout(() => (this.errorMessage = ''), 3000);
       }
     },
+
     editCategory(cat) {
       this.form = {
         id: cat.id,
@@ -214,6 +223,7 @@ export default {
         }
       });
     },
+
     async deleteCategory(id) {
       if (!confirm('Are you sure you want to delete this category?')) return;
 
@@ -236,15 +246,41 @@ export default {
         this.successMessage = 'Category deleted';
         this.errorMessage = '';
 
+        // Reset form just in case
+        this.resetForm();
+
+        // Refresh list
         await this.fetchCategories();
+
+        // Optional full page reload
+        // window.location.reload();
+
         setTimeout(() => (this.successMessage = ''), 3000);
       } catch (err) {
         this.errorMessage = err.message || 'Delete failed';
         this.successMessage = '';
         setTimeout(() => (this.errorMessage = ''), 3000);
       }
+    },
+
+    resetForm() {
+      this.form = {
+        id: null,
+        name: '',
+        parent_id: null,
+        image: null
+      };
+      this.existingImageUrl = null;
+      this.imagePreview = null;
+
+      this.$nextTick(() => {
+        if (this.$refs.imageInput) {
+          this.$refs.imageInput.value = '';
+        }
+      });
     }
   }
 };
 </script>
+
 
