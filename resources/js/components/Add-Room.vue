@@ -42,8 +42,9 @@
           </div>
 
           <button type="submit" class="btn btn-primary">
-            {{ form.id ? 'Update' : 'Submit' }}
+            {{ form.id ? 'Update Room' : 'Add Room' }}
           </button>
+          <button v-if="form.id" type="button" @click="resetForm" class="btn btn-primary ms-2">Cancel</button>
         </form>
       </div>
     </div>
@@ -176,35 +177,48 @@ export default {
       window.scrollTo(0, 0); // optional: bring form into view
     },
     async deleteRoom(id) {
-  if (!confirm('Are you sure you want to delete this room?')) return;
+      if (!confirm('Are you sure you want to delete this room?')) return;
 
-  try {
-    const response = await fetch(`${window.baseUrl}/delete-room/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'X-CSRF-TOKEN': this.csrfToken,
-        'X-Requested-With': 'XMLHttpRequest'
+      try {
+        const response = await fetch(`${window.baseUrl}/delete-room/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'X-CSRF-TOKEN': this.csrfToken,
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          this.successMessage = data.message || 'Room deleted.';
+          this.getRooms(); // Refresh list
+        } else {
+          this.errorMessage = data.message || 'Delete failed.';
+        }
+      } catch (error) {
+        this.errorMessage = 'Error deleting room.';
+        console.error(error);
+      } finally {
+        setTimeout(() => {
+          this.successMessage = '';
+          this.errorMessage = '';
+        }, 4000);
       }
-    });
+    },
 
-    const data = await response.json();
-
-    if (response.ok) {
-      this.successMessage = data.message || 'Room deleted.';
-      this.getRooms(); // Refresh list
-    } else {
-      this.errorMessage = data.message || 'Delete failed.';
-    }
-  } catch (error) {
-    this.errorMessage = 'Error deleting room.';
-    console.error(error);
-  } finally {
-    setTimeout(() => {
+    // Reset form method
+    resetForm() {
+      this.form = {
+        id: null,
+        name: '',
+        floor_id: ''
+      };
       this.successMessage = '';
       this.errorMessage = '';
-    }, 4000);
-  }
-},
+      window.scrollTo(0, 0);
+    }
   }
 };
 </script>
+

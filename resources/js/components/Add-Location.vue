@@ -41,8 +41,13 @@
               <label class="form-label">Country</label>
               <input v-model="form.country" type="text" class="form-control" placeholder="Country">
             </div>
-            <button v-if="!isEditing" type="submit" class="btn btn-primary">Add</button>
-            <button v-else type="submit" class="btn btn-success">Update</button>
+            <div class="mt-3">
+              <!-- Add / Update Button -->
+              <button type="submit" class="btn btn-primary">{{ form.id ? 'Update Location' : 'Add Location' }}</button>
+
+              <!-- Cancel Button (only when editing) -->
+              <button v-if="form.id" type="button"  @click="resetForm" class="btn btn-primary ms-2" >Cancel</button>
+            </div>
           </form>
         </div>
       </div>

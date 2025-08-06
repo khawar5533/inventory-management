@@ -31,8 +31,9 @@
               <input v-model="form.label" type="text" class="form-control" placeholder="Rack Label" required>
             </div>
 
-            <button v-if="!isEditing" type="submit" class="btn btn-primary">Add</button>
-            <button v-else type="submit" class="btn btn-success">Update</button>
+            <button v-if="!isEditing" type="submit" class="btn btn-primary">Add Rack</button>
+            <button v-else type="submit" class="btn btn-primary">Update Rack</button>
+            <button v-if="form.id" type="button" @click="resetForm" class="btn btn-primary ms-2">Cancel</button>
           </form>
         </div>
       </div>

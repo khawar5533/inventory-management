@@ -54,6 +54,7 @@
             <button type="submit" class="btn btn-primary">
               {{ form.id ? 'Update' : 'Add' }} Product Lot
             </button>
+            <button v-if="form.id" type="button" @click="resetForm" class="btn btn-primary ms-2">Cancel</button>
           </form>
         </div>
       </div>
