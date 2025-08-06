@@ -28,7 +28,10 @@
                 </option>
               </select>
             </div>
-
+            <div class="mb-3">
+              <label>Category Image</label>
+              <input type="file" @change="handleImageUpload" class="form-control" />
+            </div>
             <button type="submit" class="btn btn-primary">
               {{ form.id ? 'Update' : 'Add' }} Category
             </button>
@@ -85,7 +88,8 @@ export default {
       categories: [],
       form: {
         name: '',
-        parent_id: null
+        parent_id: null,
+         image: null   // image file
       },
       successMessage: '',
       errorMessage: ''

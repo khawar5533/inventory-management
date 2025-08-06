@@ -28,8 +28,13 @@ public function store(Request $request)
     $request->validate([
         'name' => 'required|string|max:255',
         'parent_id' => 'nullable|exists:product_categories,id',
+        'image' => 'nullable|image|max:2048'
     ]);
 
+    $imagePath = null;
+    if ($request->hasFile('image')) {
+        $imagePath = $request->file('image')->store('categories', 'public');
+    }
     // Check if a category with the same name exists (ignoring parent)
     $exists = Category::where('name', $request->name)->exists();
 
@@ -42,6 +47,7 @@ public function store(Request $request)
     $category = Category::create([
         'name' => $request->name,
         'parent_id' => $request->parent_id,
+        'image' => $imagePat
     ]);
 
     return response()->json([
@@ -55,7 +61,8 @@ public function update(Request $request, Category $category)
 {
     $request->validate([
         'name' => 'required|string|max:255',
-        'parent_id' => 'nullable|exists:product_categories,id', // adjust table name if needed
+        'parent_id' => 'nullable|exists:product_categories,id', // adjust table if needed
+        'image' => 'nullable|image|max:2048'
     ]);
 
     // Check for duplicate name (excluding current category)
@@ -70,11 +77,23 @@ public function update(Request $request, Category $category)
         ], 409); // Conflict
     }
 
-    // Proceed with update
-    $category->update([
-        'name' => $request->name,
-        'parent_id' => $request->parent_id,
-    ]);
+    // Handle image replacement
+    if ($request->hasFile('image')) {
+        // Delete old image if exists
+        if ($category->image && Storage::disk('public')->exists($category->image)) {
+            Storage::disk('public')->delete($category->image);
+        }
+
+        // Store new image
+        $imagePath = $request->file('image')->store('categories', 'public');
+
+        $category->image = $imagePath;
+    }
+
+    // Update name and parent_id
+    $category->name = $request->name;
+    $category->parent_id = $request->parent_id;
+    $category->save();
 
     return response()->json([
         'message' => 'Category updated successfully.',
