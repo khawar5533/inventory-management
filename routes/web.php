@@ -12,6 +12,7 @@ use App\Http\Controllers\BoxController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductLotController;
+use App\Http\Controllers\PurchaseOrderController;
 
 Route::get('/', [AuthController::class, 'loadLogin'])->name('login'); // shows Login only
 Route::post('/login-user', [AuthController::class, 'loginUser']);
@@ -87,8 +88,15 @@ Route::middleware(['auth'])->group(function () {
 
  Route::get('item-list', [ProductController::class, 'productItems']);
  Route::get('/box-list', [BoxController::class, 'boxItems']);
- 
+ //Purchase Order
+ Route::get('/purchaseorder', [PurchaseOrderController::class, 'loadOrderForm']);
+ Route::post('/purchase-orders', [PurchaseOrderController::class, 'store']);
+ Route::get('/purchase-orders', [PurchaseOrderController::class, 'index']);
+ Route::post('/purchase-orders/{id}', [PurchaseOrderController::class, 'update']);
 
+//  Route::get('{id}', [PurchaseOrderController::class, 'show']);
+//  Route::patch('{id}/status', [PurchaseOrderController::class, 'updateStatus']);
+//  Route::delete('{id}', [PurchaseOrderController::class, 'destroy']);
 //  Route::post('/inventory/check-in', [InventoryMovementController::class, 'checkIn']);
 // Route::post('/inventory/check-out', [InventoryMovementController::class, 'checkOut']);
 });
