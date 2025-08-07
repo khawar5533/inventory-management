@@ -88,6 +88,9 @@ Route::middleware(['auth'])->group(function () {
  Route::get('item-list', [ProductController::class, 'productItems']);
  Route::get('/box-list', [BoxController::class, 'boxItems']);
  
+
+//  Route::post('/inventory/check-in', [InventoryMovementController::class, 'checkIn']);
+// Route::post('/inventory/check-out', [InventoryMovementController::class, 'checkOut']);
 });
 
 Route::get('/get-users', [AuthController::class, 'getListUsers']);
