@@ -66,18 +66,8 @@
 						<ul id="mang" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
 							<li class='sidebar-link' @click="$emit('change-component', 'ProductLot')">Product Lot</li>
 							<li class='sidebar-link' @click="$emit('change-component', 'Get-Items')">Available Items</li>
-							<!-- <li class="sidebar-item"><a class='sidebar-link' href='ui-buttons.html'>Buttons</a></li>
-							<li class="sidebar-item"><a class='sidebar-link' href='ui-cards.html'>Cards</a></li>
-							<li class="sidebar-item"><a class='sidebar-link' href='ui-general.html'>General</a></li>
-							<li class="sidebar-item"><a class='sidebar-link' href='ui-grid.html'>Grid</a>
-							</li>
-							<li class="sidebar-item"><a class='sidebar-link' href='ui-modals.html'>Modals</a></li>
-							<li class="sidebar-item"><a class='sidebar-link' href='ui-offcanvas.html'>Offcanvas</a></li>
-							<li class="sidebar-item"><a class='sidebar-link' href='ui-placeholders.html'>Placeholders</a></li>
-							<li class="sidebar-item"><a class='sidebar-link' href='ui-notifications.html'>Notifications</a></li>
-							<li class="sidebar-item"><a class='sidebar-link' href='ui-tabs.html'>Tabs</a>
-							</li>
-							<li class="sidebar-item"><a class='sidebar-link' href='ui-typography.html'>Typography</a></li> -->
+							<li class='sidebar-link' @click="$emit('change-component', 'CheckOut')">Confirm Checkout</li>
+							
 						</ul>
 					</li>
 					<li class="sidebar-item">

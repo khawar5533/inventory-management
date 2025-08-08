@@ -15,6 +15,10 @@ class InventoryMovementController extends Controller
     {
         return view('layouts.app', ['defaultComponent' => 'GetItems']);
     }
+    public function loadCheckOut()
+    {
+        return view('layouts.app', ['defaultComponent' => 'CheckOut']);
+    }
     // Display all list items
     public function availableItems()
     {
