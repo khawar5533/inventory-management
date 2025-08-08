@@ -11,10 +11,10 @@
           <div v-if="errorMessage" class="alert alert-danger p-2">{{ errorMessage }}</div>
 
           <form @submit.prevent="submitForm">
-            <!-- Order Number -->
-            <div class="mb-3">
-              <label class="form-label">Order Number</label>
-              <input type="text" v-model="form.order_number" class="form-control" :disabled="isEdit" />
+           <!-- Order Number (only visible in create mode) -->
+            <div v-if="!isEdit">
+              <label>Order Number</label>
+              <input type="text" v-model="form.order_number" class="form-control" />
             </div>
 
             <!-- Customer Name -->
@@ -41,14 +41,18 @@
             </div>
 
             <!-- Submit -->
-            <button type="submit" class="btn btn-primary">Save Purchase Order</button>
+            <button type="submit" class="btn btn-primary"> {{ isEdit ? 'Update Order' : 'Save Purchase Orders' }}</button>
+                        <button v-if="form.id" type="button" @click="resetForm" class="btn btn-primary ms-2">Cancel</button>
+
           </form>
         </div>
       </div>
 
       <!-- Existing Orders Table -->
       <div class="card mt-4">
-        <div class="card-header"><h5 class="card-title">Purchase Orders</h5></div>
+        <div class="card-header"><h5 class="card-title">
+         
+         </h5></div>
         <div class="card-body">
           <table class="table table-bordered">
             <thead>
@@ -131,7 +135,7 @@ export default {
 async submitForm() {
   this.successMessage = '';
   this.errorMessage = '';
-
+ 
   const url = this.form.id
     ? `${window.baseUrl}/purchase-orders/${this.form.id}`
     : `${window.baseUrl}/purchase-orders`;
@@ -172,14 +176,15 @@ async submitForm() {
 },
 
    editOrder(order) {
-  this.form = {
-    id: order.id,
-    customer_name: order.customer_name,
-    status: order.status,
-    notes: order.notes,
-    order_number: order.order_number // optional, if only for display
-  };
-},
+    this.isEdit = true;
+    this.form = {
+      id: order.id,
+      customer_name: order.customer_name,
+      status: order.status,
+      notes: order.notes,
+      order_number: order.order_number // optional, if only for display
+    };
+  },
 
     async deleteOrder(id) {
       if (!confirm('Are you sure you want to delete this order?')) return;

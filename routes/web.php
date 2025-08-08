@@ -93,10 +93,7 @@ Route::middleware(['auth'])->group(function () {
  Route::post('/purchase-orders', [PurchaseOrderController::class, 'store']);
  Route::get('/purchase-orders', [PurchaseOrderController::class, 'index']);
  Route::post('/purchase-orders/{id}', [PurchaseOrderController::class, 'update']);
-
-//  Route::get('{id}', [PurchaseOrderController::class, 'show']);
-//  Route::patch('{id}/status', [PurchaseOrderController::class, 'updateStatus']);
-//  Route::delete('{id}', [PurchaseOrderController::class, 'destroy']);
+Route::delete('purchase-orders/{id}', [PurchaseOrderController::class, 'destroy']);
 //  Route::post('/inventory/check-in', [InventoryMovementController::class, 'checkIn']);
 // Route::post('/inventory/check-out', [InventoryMovementController::class, 'checkOut']);
 });
