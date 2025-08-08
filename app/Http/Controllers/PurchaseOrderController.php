@@ -4,80 +4,55 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\PurchaseOrder;
+use App\Models\PurchaseOrderItem;
 use Illuminate\Validation\ValidationException;
+
 class PurchaseOrderController extends Controller
 {   
-   //Show the list of purchase order
-    public function index()
+
+    public function store(Request $request)
     {
-        return response()->json(['data' => PurchaseOrder::all()]);
-    }
-    // load the order form template
-    public function loadOrderForm()
-    {
-        return view('layouts.app', ['defaultComponent' => 'PurchaseOrder']);
-    }
-    // create purchase order
-     public function store(Request $request)
-    {
-        // Step 1: Validate input
-        $validated = $request->validate([
-            'order_number'   => 'required|string|unique:purchase_orders,order_number',
-            'customer_name'  => 'required|string|max:255',
-            'status'         => 'required|in:pending,partial,completed,cancelled',
-            'notes'          => 'nullable|string'
+        $order = PurchaseOrder::create([
+            'order_number'   => 'PO-' . now()->format('Ymd-His'),
+            'customer_name'  => auth()->user()->name,
+            'status'         => $request->status ?? 'pending',
+            'notes'          => $request->notes ?? 'Auto-generated from cart',
+            'total_amount'   => 0 // start with zero
         ]);
 
-        // Step 2: Create and save purchase order
-        $purchaseOrder = PurchaseOrder::create($validated);
-
-        // Step 3: Return success response
         return response()->json([
             'message' => 'Purchase order created successfully.',
-            'data' => $purchaseOrder
+            'order'   => $order
         ], 201);
     }
 
-    //update purchase order 
-    public function update(Request $request, $id)
+    public function storeItems(Request $request, PurchaseOrder $order)
     {
-        $purchaseOrder = PurchaseOrder::find($id);
+        $items = $request->input('items');
 
-        if (!$purchaseOrder) {
-            return response()->json(['message' => 'Purchase order not found'], 404);
+        if (!is_array($items) || count($items) === 0) {
+            return response()->json(['message' => 'No items provided.'], 422);
         }
 
-        try {
-            $input = $request->except('order_number');
+        $savedItems = [];
 
-            $validated = validator($input, [
-                'customer_name' => 'required|string|max:255',
-                'status'        => 'required|in:pending,partial,completed,cancelled',
-                'notes'         => 'nullable|string',
-            ])->validate();
+        foreach ($items as $item) {
+            $subtotal = floatval($item['quantity']) * floatval($item['unit_price']);
 
-            $purchaseOrder->update($validated);
-
-            return response()->json(['message' => 'Purchase order updated successfully']);
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
-        } catch (\Exception $e) {
-            \Log::error('Update failed: ' . $e->getMessage());
-            return response()->json(['message' => 'Something went wrong'], 500);
-        }
-    }
-    //Delete Function
-    public function destroy($id)
-    {
-        $purchaseOrder = PurchaseOrder::find($id);
-
-        if (!$purchaseOrder) {
-            return response()->json(['message' => 'Purchase order not found'], 404);
+            $savedItems[] = $order->items()->create([
+                'product_id'         => $item['product_id'],
+                'lot_id'             => $item['lot_id'],
+                'quantity'           => $item['quantity'],
+                'unit_price'         => $item['unit_price'],
+                'subtotal'           => $subtotal, // insert subtotal
+                'purchase_order_id'  => $order->id
+            ]);
         }
 
-        $purchaseOrder->delete(); // ✅ now soft-deletes
-
-        return response()->json(['message' => 'Purchase order soft deleted successfully']);
+        return response()->json([
+            'message' => 'Items added successfully.',
+            'order'   => $order->load('items')
+        ]);
     }
 
 

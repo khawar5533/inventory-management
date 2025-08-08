@@ -13,6 +13,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductLotController;
 use App\Http\Controllers\PurchaseOrderController;
+use App\Http\Controllers\InventoryMovementController;
 
 Route::get('/', [AuthController::class, 'loadLogin'])->name('login'); // shows Login only
 Route::post('/login-user', [AuthController::class, 'loginUser']);
@@ -82,18 +83,21 @@ Route::middleware(['auth'])->group(function () {
   //ProductLot
  Route::get('/productlot', [ProductLotController::class, 'loadLotForm']);
  Route::get('/lot-list', [ProductLotController::class, 'index']);
+
  Route::post('/add-lot', [ProductLotController::class, 'store']);
  Route::post('/update-lot/{id}', [ProductLotController::class, 'update']);
  Route::delete('/delete-lot/{id}', [ProductLotController::class, 'destroy']);
 
  Route::get('item-list', [ProductController::class, 'productItems']);
- Route::get('/box-list', [BoxController::class, 'boxItems']);
+//  Route::get('/box-list', [BoxController::class, 'boxItems']);
  //Purchase Order
- Route::get('/purchaseorder', [PurchaseOrderController::class, 'loadOrderForm']);
  Route::post('/purchase-orders', [PurchaseOrderController::class, 'store']);
- Route::get('/purchase-orders', [PurchaseOrderController::class, 'index']);
- Route::post('/purchase-orders/{id}', [PurchaseOrderController::class, 'update']);
-Route::delete('purchase-orders/{id}', [PurchaseOrderController::class, 'destroy']);
+Route::post('/purchase-orders/{order}/items', [PurchaseOrderController::class, 'storeItems'])
+    ->name('purchase-orders.items.store');
+
+// inventory Movement
+  Route::get('/get-items', [InventoryMovementController::class, 'loadAvailableItems']);
+  Route::get('/available-items', [InventoryMovementController::class, 'availableItems']);
 //  Route::post('/inventory/check-in', [InventoryMovementController::class, 'checkIn']);
 // Route::post('/inventory/check-out', [InventoryMovementController::class, 'checkOut']);
 });

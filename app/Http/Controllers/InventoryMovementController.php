@@ -9,9 +9,30 @@ use Illuminate\Support\Facades\DB;
 
 class InventoryMovementController extends Controller
 {
+    
+    // Load Blade view with Vue Product component
+    public function loadAvailableItems()
+    {
+        return view('layouts.app', ['defaultComponent' => 'GetItems']);
+    }
+    // Display all list items
+    public function availableItems()
+    {
+        $movements = InventoryMovement::with([
+            'productLot.product',
+            'productLot.box.rack.room.floor.location'
+        ])
+        ->whereHas('productLot', fn($q) => $q->where('quantity', '>', 0))
+        ->get();
+
+        return response()->json($movements);
+    }
+    
+
     /**
      * Handle check-in (adding stock).
      */
+
     public function checkIn(Request $request)
     {
         $request->validate([
