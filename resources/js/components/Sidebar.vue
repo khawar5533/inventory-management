@@ -65,6 +65,7 @@
 						</a>
 						<ul id="mang" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
 							<li class='sidebar-link' @click="$emit('change-component', 'ProductLot')">Product Lot</li>
+							<li class='sidebar-link' @click="$emit('change-component', 'Get-Items')">Available Items</li>
 							<!-- <li class="sidebar-item"><a class='sidebar-link' href='ui-buttons.html'>Buttons</a></li>
 							<li class="sidebar-item"><a class='sidebar-link' href='ui-cards.html'>Cards</a></li>
 							<li class="sidebar-item"><a class='sidebar-link' href='ui-general.html'>General</a></li>

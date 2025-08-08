@@ -13,14 +13,8 @@ class ProductLot extends Model
     protected $table = 'product_lots';
 
     // Define fillable fields for mass assignment
-    protected $fillable = [
-        'product_id',
-        'lot_number',
-        'expiration_date',
-        'condition',
-        'quantity',
-        'box_id'
-    ];
+   protected $fillable = [
+    'product_id', 'lot_number', 'expiration_date', 'condition', 'quantity', 'box_id'];
     // Define relationships (example: a lot belongs to a product)
     public function product()
     {
@@ -29,5 +23,9 @@ class ProductLot extends Model
     public function box()
     {
         return $this->belongsTo(Box::class, 'box_id');
+    }
+    public function movements()
+    {
+        return $this->hasMany(InventoryMovement::class, 'lot_id');
     }
 }

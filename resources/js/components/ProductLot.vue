@@ -4,12 +4,9 @@
       <div class="card">
         <div class="card-header"><h5 class="card-title mb-0">Manage Product Lots</h5></div>
         <div class="card-body">
-
-          <!-- Alerts -->
           <div v-if="successMessage" class="alert alert-success p-2">{{ successMessage }}</div>
           <div v-if="errorMessage" class="alert alert-danger p-2">{{ errorMessage }}</div>
 
-          <!-- Form -->
           <form @submit.prevent="submitForm">
             <div class="mb-3">
               <label>Product</label>
@@ -20,8 +17,8 @@
             </div>
 
             <div class="mb-3">
-              <label>Lot Number</label>
-              <input type="text" v-model="form.lot_number" class="form-control" required />
+              <label>Lot Number (e.g. 1234)</label>
+              <input type="text" v-model="form.lot_number" class="form-control" :disabled="!!form.id" required />
             </div>
 
             <div class="mb-3">
@@ -40,7 +37,7 @@
 
             <div class="mb-3">
               <label>Quantity</label>
-              <input type="number" v-model="form.quantity" class="form-control" required />
+              <input type="number" v-model="form.quantity" class="form-control" :disabled="!!form.id" required min="1" />
             </div>
 
             <div class="mb-3">
@@ -59,7 +56,6 @@
         </div>
       </div>
 
-      <!-- List of Product Lots -->
       <div class="card mt-4">
         <div class="card-header"><h5 class="card-title">Saved Lots</h5></div>
         <div class="card-body">
@@ -67,7 +63,7 @@
             <thead>
               <tr>
                 <th>Product</th>
-                <th>Lot #</th>
+                <th>Formatted Lot #</th>
                 <th>Expiration</th>
                 <th>Condition</th>
                 <th>Quantity</th>
@@ -95,7 +91,6 @@
           </table>
         </div>
       </div>
-
     </div>
   </div>
 </template>
@@ -124,78 +119,99 @@ export default {
   mounted() {
     this.fetchProducts();
     this.fetchBoxes();
-    this.fetchData(); // FIXED: Added this to mount lifecycle hook
+    this.fetchData();
   },
   methods: {
-    async fetchData() { // FIXED: Added missing fetchData method
+    async fetchData() {
       try {
         const res = await fetch(`${window.baseUrl}/lot-list`);
         this.lots = await res.json();
-      } catch (err) {
-        this.errorMessage = 'Failed to load lots.';
-        setTimeout(() => (this.errorMessage = ''), 3000);
+      } catch {
+        this.showError('Failed to load lots.');
       }
     },
-
     async fetchProducts() {
       try {
         const res = await fetch(`${window.baseUrl}/item-list`);
         this.products = await res.json();
-      } catch (err) {
-        this.errorMessage = 'Failed to load products.';
-        setTimeout(() => (this.errorMessage = ''), 3000);
+      } catch {
+        this.showError('Failed to load products.');
       }
     },
-
     async fetchBoxes() {
       try {
         const res = await fetch(`${window.baseUrl}/box-list`);
         this.boxes = await res.json();
-      } catch (err) {
-        this.errorMessage = 'Failed to load boxes.';
-        setTimeout(() => (this.errorMessage = ''), 3000);
+      } catch {
+        this.showError('Failed to load boxes.');
       }
     },
+   async submitForm() {
+    this.successMessage = '';
+    this.errorMessage = '';
 
-    async submitForm() {
-      const url = this.form.id
-        ? `${window.baseUrl}/update-lot/${this.form.id}`
-        : `${window.baseUrl}/add-lot`;
+    const isUpdate = !!this.form.id;
+    const url = isUpdate
+      ? `${window.baseUrl}/update-lot/${this.form.id}`
+      : `${window.baseUrl}/add-lot`;
 
-      const csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-      try {
-        const res = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': csrf
-          },
-          body: JSON.stringify(this.form)
-        });
+    const payload = {
+      ...this.form,
+      lot_condition: this.form.condition // ensure mapping matches backend
+    };
 
-        const result = await res.json();
-        if (!res.ok) throw new Error(result.message || 'Failed to save lot.');
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json', // 👈 forces Laravel to return JSON
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf
+        },
+        body: JSON.stringify(payload)
+      });
 
-        this.successMessage = result.message || 'Lot saved successfully!';
-        this.resetForm();
-        await this.fetchData();
-
-        setTimeout(() => (this.successMessage = ''), 3000);
-      } catch (err) {
-        this.errorMessage = err.message;
-        setTimeout(() => (this.errorMessage = ''), 3000);
+      if (res.status === 422) {
+        // Laravel validation failed
+        const errorData = await res.json();
+        const errorMessage = errorData?.message || 'Validation failed.';
+        const firstError = errorData?.errors ? Object.values(errorData.errors)[0][0] : errorMessage;
+        this.showError(firstError);
+        return;
       }
-    },
 
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData?.message || 'Server error');
+      }
+
+      const result = await res.json();
+      this.successMessage = result.message || 'Saved successfully.';
+      this.resetForm();
+      await this.fetchData();
+      this.clearMessages();
+    } catch (err) {
+      this.showError(err.message || 'Unexpected error occurred.');
+    }
+  },
     editLot(lot) {
-      this.form = { ...lot };
+      this.form = {
+        id: lot.id,
+        product_id: lot.product_id,
+        lot_number: lot.lot_number.split('-').pop(), // extract raw number
+        expiration_date: lot.expiration_date,
+        condition: lot.condition,
+        quantity: lot.quantity,
+        box_id: lot.box_id
+      };
     },
-
     async deleteLot(id) {
       if (!confirm('Are you sure you want to delete this lot?')) return;
 
       const csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
       try {
         const res = await fetch(`${window.baseUrl}/delete-lot/${id}`, {
           method: 'DELETE',
@@ -204,15 +220,13 @@ export default {
 
         if (!res.ok) throw new Error('Delete failed.');
 
-        this.successMessage = 'Lot deleted successfully';
+        this.successMessage = 'Deleted successfully.';
         await this.fetchData();
-        setTimeout(() => (this.successMessage = ''), 3000);
+        this.clearMessages();
       } catch (err) {
-        this.errorMessage = err.message;
-        setTimeout(() => (this.errorMessage = ''), 3000);
+        this.showError(err.message);
       }
     },
-
     resetForm() {
       this.form = {
         id: null,
@@ -223,8 +237,17 @@ export default {
         quantity: '',
         box_id: ''
       };
+    },
+    showError(msg) {
+      this.errorMessage = msg;
+      setTimeout(() => (this.errorMessage = ''), 3000);
+    },
+    clearMessages() {
+      setTimeout(() => {
+        this.successMessage = '';
+        this.errorMessage = '';
+      }, 3000);
     }
   }
 };
-
 </script>

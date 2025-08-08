@@ -29,6 +29,7 @@ import Box from './components/Box.vue'
 import Category from './components/Category.vue'
 import Product from './components/Product.vue'
 import ProductLot from './components/ProductLot.vue'
+import GetItems from './components/GetItems.vue'
 import Footer from './components/Footer.vue'
 
 export default {
@@ -51,6 +52,7 @@ export default {
     Category,
     Product,
     ProductLot,
+    GetItems,
     Login,
     Footer
   },
