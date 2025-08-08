@@ -97,6 +97,7 @@ Route::post('/purchase-orders/{order}/items', [PurchaseOrderController::class, '
 
 // inventory Movement
   Route::get('/get-items', [InventoryMovementController::class, 'loadAvailableItems']);
+  Route::get('/checkout', [InventoryMovementController::class, 'loadCheckOut']);
   Route::get('/available-items', [InventoryMovementController::class, 'availableItems']);
 //  Route::post('/inventory/check-in', [InventoryMovementController::class, 'checkIn']);
 // Route::post('/inventory/check-out', [InventoryMovementController::class, 'checkOut']);

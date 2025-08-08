@@ -3,7 +3,7 @@
     <div class="col-12">
       <!-- Items Table -->
       <div class="card">
-        <div class="card-header"><h5>Items List</h5></div>
+        <div class="card-header"><h5>Inventory Available Items</h5></div>
         <div class="card-body table-responsive">
           <table class="table table-bordered">
             <thead>
