@@ -212,8 +212,8 @@ export default {
 
     printOrder(orderId) {
       // adjust print path if needed
-      const url = this.buildUrl(`/orders/${orderId}/print`);
-      window.open(url, "_blank");
+     const url = this.buildUrl(`/orders/${orderId}/print`);
+  window.open(url, "_blank");
     },
   },
 

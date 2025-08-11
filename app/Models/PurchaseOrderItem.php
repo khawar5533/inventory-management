@@ -32,5 +32,6 @@ class PurchaseOrderItem extends Model
     {
         return $this->belongsTo(ProductLot::class, 'lot_id');
     }
+    
 }
 
