@@ -28,4 +28,9 @@ class ProductLot extends Model
     {
         return $this->hasMany(InventoryMovement::class, 'lot_id');
     }
+     // A lot can be linked to many order items
+    public function orderItems()
+    {
+        return $this->hasMany(PurchaseOrderItem::class, 'lot_id');
+    }
 }

@@ -32,6 +32,12 @@ class PurchaseOrder extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    // An order belongs to one user
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
     
 }
 
