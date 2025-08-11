@@ -19,12 +19,13 @@ public function getUserOrders()
     $orders = DB::table('purchase_orders as po')
         ->join('purchase_order_items as poi', 'po.id', '=', 'poi.purchase_order_id')
         ->join('product_lots as pl', 'poi.lot_id', '=', 'pl.id')
-        ->leftJoin('products as p', 'pl.product_id', '=', 'p.id') // LEFT JOIN to avoid missing data
+        ->leftJoin('products as p', 'pl.product_id', '=', 'p.id')
         ->select(
             'po.id as order_id',
             'po.order_number',
+            'po.status', 
             'poi.lot_id',
-            'p.name as product_name', // product name from products table
+            'p.name as product_name',
             'poi.quantity as ordered_quantity',
             'poi.unit_price',
             DB::raw('(poi.quantity * poi.unit_price) as subtotal'),
@@ -35,6 +36,7 @@ public function getUserOrders()
 
     return response()->json($orders);
 }
+
 
 
 
@@ -51,8 +53,13 @@ public function checkoutOrder($orderId)
             ->where('purchase_order_id', $orderId)
             ->get();
 
+        $orderTotal = 0;
+
         foreach ($items as $item) {
-            // 1 Insert a new check-out movement (quantity stays as is)
+            // Add to total (assuming you have unit_price column)
+            $orderTotal += $item->quantity * $item->unit_price;
+
+            // 1. Insert a new check-out movement (quantity stays as is)
             DB::table('inventory_movements')->insert([
                 'lot_id'            => $item->lot_id,
                 'type'              => 'check-out',
@@ -63,7 +70,7 @@ public function checkoutOrder($orderId)
                 'updated_at'        => now(),
             ]);
 
-            // 2 Reduce quantity from the latest check-in record(s)
+            // 2. Reduce quantity from the latest check-in record(s)
             $remainingQty = $item->quantity;
 
             $checkIns = DB::table('inventory_movements')
@@ -89,16 +96,20 @@ public function checkoutOrder($orderId)
             }
         }
 
-        // 3 Mark order as completed (if column exists)
+        // 3. Mark order as completed and update total
         if (Schema::hasColumn('purchase_orders', 'status')) {
             DB::table('purchase_orders')
                 ->where('id', $orderId)
-                ->update(['status' => 'completed']);
+                ->update([
+                    'status' => 'completed',
+                    'total'  => $orderTotal,
+                    'updated_at' => now(),
+                ]);
         }
     });
 
     return response()->json([
-        'message' => 'Checkout complete, stock updated, and movement recorded.'
+        'message' => 'Checkout complete, total updated, stock adjusted, and movement recorded.'
     ]);
 }
 

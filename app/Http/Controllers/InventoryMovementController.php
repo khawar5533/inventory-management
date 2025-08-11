@@ -26,6 +26,7 @@ class InventoryMovementController extends Controller
             'productLot.product',
             'productLot.box.rack.room.floor.location'
         ])
+        ->where('type', 'check-in')
         ->whereHas('productLot', fn($q) => $q->where('quantity', '>', 0))
         ->get();
 
