@@ -105,6 +105,8 @@ Route::post('/purchase-orders/{order}/items', [PurchaseOrderController::class, '
 //Final Order
 Route::get('/orders', [OrderController::class, 'getUserOrders']);
 Route::post('/orders/{orderId}/checkout', [OrderController::class, 'checkoutOrder']);
+Route::get('/orders/{id}/print', [OrderController::class, 'print'])->name('orders.print');
+
 
 });
 
