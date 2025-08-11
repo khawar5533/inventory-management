@@ -14,6 +14,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductLotController;
 use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\InventoryMovementController;
+use App\Http\Controllers\OrderController;
 
 Route::get('/', [AuthController::class, 'loadLogin'])->name('login'); // shows Login only
 Route::post('/login-user', [AuthController::class, 'loginUser']);
@@ -101,6 +102,10 @@ Route::post('/purchase-orders/{order}/items', [PurchaseOrderController::class, '
   Route::get('/available-items', [InventoryMovementController::class, 'availableItems']);
 //  Route::post('/inventory/check-in', [InventoryMovementController::class, 'checkIn']);
 // Route::post('/inventory/check-out', [InventoryMovementController::class, 'checkOut']);
+//Final Order
+Route::get('/orders', [OrderController::class, 'getUserOrders']);
+Route::post('/orders/{orderId}/checkout', [OrderController::class, 'checkoutOrder']);
+
 });
 
 Route::get('/get-users', [AuthController::class, 'getListUsers']);
