@@ -43,6 +43,11 @@ class AuthController extends Controller
     {
         return view('layouts.app', ['defaultComponent' => 'Role']);
     }
+    // Load User Profile
+     public function showUserProfile()
+    {
+        return view('layouts.app', ['defaultComponent' => 'UserProfile']);
+    }
         /**
      * Return the list of users as JSON for Vue to consume via fetch/AJAX.
      */

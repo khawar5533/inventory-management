@@ -22,6 +22,7 @@ Route::post('/login-user', [AuthController::class, 'loginUser']);
 Route::middleware(['auth'])->group(function () {
   Route::get('/dashboard', fn() => view('layouts.app', ['defaultComponent' => 'Content'])); 
   Route::get('/register', [AuthController::class, 'showRegister']); // shows Register
+  Route::get('/userprofile', [AuthController::class, 'showUserProfile']);
   Route::get('/role', [AuthController::class, 'showRoleForm']); // shows Add Role Form
   Route::get('/permission', [PermissionController::class, 'loadPermission']);
   Route::get('/user-roles', [AuthController::class, 'getUserRoles']);

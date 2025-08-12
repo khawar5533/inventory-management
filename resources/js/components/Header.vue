@@ -143,11 +143,11 @@
 							</div>
 						</li>
 						<li class="nav-item dropdown ms-lg-2">
-							<a class="nav-link dropdown-toggle position-relative" href="#" id="userDropdown" data-bs-toggle="dropdown">
+							<a class="nav-link dropdown-toggle position-relative" href="#"  id="userDropdown" data-bs-toggle="dropdown">
 								<i class="align-middle fas fa-cog"></i>
 							</a>
 							<div class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-								<a class="dropdown-item" href="#"><i class="align-middle me-1 fas fa-fw fa-user"></i> View Profile</a>
+								<a class="dropdown-item" href="#" @click="$emit('change-component', 'UserProfile')"><i class="align-middle me-1 fas fa-fw fa-user"></i> View Profile</a>
 								<a class="dropdown-item" href="#"><i class="align-middle me-1 fas fa-fw fa-comments"></i> Contacts</a>
 								<a class="dropdown-item" href="#"><i class="align-middle me-1 fas fa-fw fa-chart-pie"></i> Analytics</a>
 								<a class="dropdown-item" href="#"><i class="align-middle me-1 fas fa-fw fa-cogs"></i> Settings</a>
