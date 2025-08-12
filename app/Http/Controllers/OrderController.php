@@ -17,28 +17,32 @@ class OrderController extends Controller
      * No filter on user_id since the column may not exist.
      */
 
-    public function getUserOrders()
-    {
-        $orders = DB::table('purchase_orders as po')
-            ->join('purchase_order_items as poi', 'po.id', '=', 'poi.purchase_order_id')
-            ->join('product_lots as pl', 'poi.lot_id', '=', 'pl.id')
-            ->leftJoin('products as p', 'pl.product_id', '=', 'p.id')
-            ->select(
-                'po.id as order_id',
-                'po.order_number',
-                'po.status', 
-                'poi.lot_id',
-                'p.name as product_name',
-                'poi.quantity as ordered_quantity',
-                'poi.unit_price',
-                DB::raw('(poi.quantity * poi.unit_price) as subtotal'),
-                'pl.quantity as stock_quantity'
-            )
-            ->orderBy('po.id', 'desc')
-            ->get();
 
-        return response()->json($orders);
-    }
+
+public function getUserOrders()
+{
+    $orders = DB::table('purchase_orders as po')
+        ->join('purchase_order_items as poi', 'po.id', '=', 'poi.purchase_order_id')
+        ->join('product_lots as pl', 'poi.lot_id', '=', 'pl.id')
+        ->leftJoin('products as p', 'pl.product_id', '=', 'p.id')
+        ->select(
+            'po.id as order_id',
+            'po.order_number',
+            'po.status', 
+            'poi.lot_id',
+            'p.name as product_name',
+            'poi.quantity as ordered_quantity',
+            'poi.unit_price',
+            DB::raw('(poi.quantity * poi.unit_price) as subtotal'),
+            'pl.quantity as stock_quantity'
+        )
+        ->where('po.user_id', Auth::id()) // ✅ only orders for current logged-in user
+        ->orderBy('po.id', 'desc')
+        ->get();
+
+    return response()->json($orders);
+}
+
 
 
 

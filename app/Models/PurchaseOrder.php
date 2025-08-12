@@ -10,11 +10,13 @@ class PurchaseOrder extends Model
     use HasFactory;
     use SoftDeletes; // Add this trait
     protected $fillable = [
-        'order_number',
-        'customer_name',
-        'status',
-        'notes',
-    ];
+            'user_id',
+            'order_number',
+            'customer_name',
+            'status',
+            'notes',
+            // add other fillable columns here
+        ];
 
     public function items()
     {
@@ -37,6 +39,11 @@ class PurchaseOrder extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    
+    public function lot()
+    {
+        return $this->belongsTo(ProductLot::class, 'lot_id', 'id');
     }
     
 }

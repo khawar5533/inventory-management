@@ -24,6 +24,7 @@ Route::middleware(['auth'])->group(function () {
   Route::get('/register', [AuthController::class, 'showRegister']); // shows Register
   Route::get('/role', [AuthController::class, 'showRoleForm']); // shows Add Role Form
   Route::get('/permission', [PermissionController::class, 'loadPermission']);
+  Route::get('/user-roles', [AuthController::class, 'getUserRoles']);
   Route::get('/user-permission', [PermissionController::class, 'loadAssignPermission']);
   Route::get('userrole', [RoleController ::class, 'loadRoleUserForm']);
   Route::post('/logout', [AuthController::class, 'logout'])->name('logout');//Logout

@@ -167,6 +167,30 @@ public function logout(Request $request)
     // Redirect to login page (with flash message if needed)
     return redirect()->route('login')->with('status', 'Logged out successfully.');
 }
+//get user role
+   public function getUserRoles(Request $request)
+    {
+        try {
+            $user = Auth::user();
+
+            if (!$user) {
+                return response()->json(['error' => 'Unauthenticated'], 401);
+            }
+
+            $roles = $user->roles()->pluck('name');
+
+            return response()->json([
+                'roles' => $roles,
+                'userName' => $user->name,
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => 'Server error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+}
+
 
 
 }

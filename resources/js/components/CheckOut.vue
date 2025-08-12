@@ -8,7 +8,7 @@
 
         <div class="card-body">
           <div v-if="loading" class="mb-3">Loading orders...</div>
-          <div v-else-if="orders.length === 0" class="alert alert-info">
+          <div v-else-if="orders.length === 0" class="alert alert-warning  p-3">
             No orders found.
           </div>
 
