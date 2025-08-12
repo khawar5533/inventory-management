@@ -1,7 +1,7 @@
 <template>
   <Sidebar @change-component="setComponent" />
   <div class="main">
-    <Header />
+     <Header @change-component="setComponent" />
     <main class="content">
       <component :is="currentComponent" :key="componentKey" />
     </main>
@@ -31,6 +31,7 @@ import Product from './components/Product.vue'
 import ProductLot from './components/ProductLot.vue'
 import GetItems from './components/GetItems.vue'
 import CheckOut from './components/CheckOut.vue'
+import UserProfile from './components/UserProfile.vue'
 import Footer from './components/Footer.vue'
 
 export default {
@@ -55,6 +56,7 @@ export default {
     ProductLot,
     GetItems,
     CheckOut,
+    UserProfile,
     Login,
     Footer
   },
