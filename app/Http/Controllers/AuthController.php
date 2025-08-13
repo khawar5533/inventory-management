@@ -259,4 +259,40 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'No image found'], 404);
     }
+
+    // update password
+    public function updatePassword(Request $request)
+    {
+        // Validate incoming data
+        $validator = Validator::make($request->all(), [
+            'current_password' => 'required|string',
+            'new_password' => 'required|string|min:6|confirmed', // confirms with new_password_confirmation
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors()->first(),
+            ], 422);
+        }
+
+        $user = auth()->user();
+
+        // Check if current password matches
+        if (!Hash::check($request->current_password, $user->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Current password is incorrect.',
+            ], 400);
+        }
+
+        // Update to new password
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Password updated successfully.',
+        ]);
+    }
 }

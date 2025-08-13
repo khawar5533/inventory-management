@@ -7,18 +7,8 @@
           <h5 class="card-title mb-0">Profile Settings</h5>
         </div>
         <div class="list-group list-group-flush" role="tablist">
-          <a
-            class="list-group-item list-group-item-action active"
-            data-bs-toggle="list"
-            href="#account"
-            role="tab"
-          >Account</a>
-          <a
-            class="list-group-item list-group-item-action"
-            data-bs-toggle="list"
-            href="#password"
-            role="tab"
-          >Password</a>
+          <a class="list-group-item list-group-item-action active" data-bs-toggle="list" href="#account" role="tab">Account</a>
+          <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#password" role="tab">Password</a>
         </div>
       </div>
     </div>
@@ -26,7 +16,7 @@
     <!-- Main content -->
     <div class="col-md-9 col-xl-10">
       <div class="tab-content">
-        
+
         <!-- Account Tab -->
         <div class="tab-pane fade show active" id="account" role="tabpanel">
           <div class="card">
@@ -34,17 +24,10 @@
               <h5 class="card-title mb-0">Private info</h5>
             </div>
             <div class="card-body">
-
-              <!-- Alert -->
-              <div
-                v-if="alertMessage"
-                :class="['alert p-2', alertType === 'success' ? 'alert-success' : 'alert-danger']"
-                role="alert"
-              >
+              <div v-if="alertMessage" :class="['alert p-2', alertType === 'success' ? 'alert-success' : 'alert-danger']" role="alert">
                 {{ alertMessage }}
               </div>
 
-              <!-- Profile Form -->
               <form @submit.prevent="updateUser">
                 <div class="row">
                   <div class="col-md-8">
@@ -57,17 +40,13 @@
                       <input type="text" class="form-control" id="inputCompany" v-model="form.company" placeholder="Company name">
                     </div>
                   </div>
-                  <div class="col-md-4">
-                    <div class="text-center">
-                      <img v-if="preview" :src="preview" class="rounded-circle img-responsive mt-2" width="128" height="128" />
-                      <div class="mt-2">
-                        <label for="user_image" class="btn btn-primary">
-                          <i class="fas fa-upload"></i> Upload
-                        </label>
-                        <input type="file" id="user_image" name="user_image" accept="image/*" style="display: none;" @change="handleImage">
-                      </div>
-                      <small>For best results, use an image at least 128px by 128px in .jpg format</small>
+                  <div class="col-md-4 text-center">
+                    <img v-if="preview" :src="preview" class="rounded-circle img-responsive mt-2" width="128" height="128" />
+                    <div class="mt-2">
+                      <label for="user_image" class="btn btn-primary"><i class="fas fa-upload"></i> Upload</label>
+                      <input type="file" id="user_image" name="user_image" accept="image/*" style="display: none;" @change="handleImage">
                     </div>
+                    <small>For best results, use an image at least 128px by 128px in .jpg format</small>
                   </div>
                 </div>
 
@@ -127,20 +106,26 @@
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">Password</h5>
-              <form>
+              <div v-if="alertMessage" :class="['alert p-2', alertType === 'success' ? 'alert-success' : 'alert-danger']" role="alert">
+                {{ alertMessage }}
+              </div>
+
+              <form @submit.prevent="updatePassword">
                 <div class="mb-3">
                   <label for="inputPasswordCurrent">Current password</label>
-                  <input type="password" class="form-control" id="inputPasswordCurrent">
-                  <small><a href="#">Forgot your password?</a></small>
+                  <input type="password" v-model="currentPassword" class="form-control" id="inputPasswordCurrent" placeholder="Enter current password" />
                 </div>
+
                 <div class="mb-3">
                   <label for="inputPasswordNew">New password</label>
-                  <input type="password" class="form-control" id="inputPasswordNew">
+                  <input type="password" v-model="newPassword" class="form-control" id="inputPasswordNew" placeholder="Enter new password" />
                 </div>
+
                 <div class="mb-3">
                   <label for="inputPasswordNew2">Verify password</label>
-                  <input type="password" class="form-control" id="inputPasswordNew2">
+                  <input type="password" v-model="verifyPassword" class="form-control" id="inputPasswordNew2" placeholder="Confirm new password" />
                 </div>
+
                 <button type="submit" class="btn btn-primary">Save changes</button>
               </form>
             </div>
@@ -170,6 +155,9 @@ export default {
         zip: "",
         country: ""
       },
+      currentPassword: "",   // user manually enters current password
+      newPassword: "",
+      verifyPassword: "",
       imageFile: null,
       preview: null,
       userId: null,
@@ -196,37 +184,30 @@ export default {
         if (data.user_image) {
           this.preview = `${window.baseUrl}/storage/${data.user_image}`;
         }
+        // Do NOT pre-fill currentPassword for security
+        this.currentPassword = "";
+        this.newPassword = "";
+        this.verifyPassword = "";
       } catch (error) {
         console.error("Error fetching user data:", error);
         this.showAlert("Failed to load user data.", "error");
       }
     },
+
     async handleImage(event) {
       const file = event.target.files[0];
       if (!file) return;
-      if (this.preview && this.userId) {
-        try {
-          await fetch(`${window.baseUrl}/users/${this.userId}/delete-image`, {
-            method: "POST",
-            headers: {
-              "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
-            }
-          });
-        } catch (err) {
-          console.warn("Error removing old image:", err);
-        }
-      }
+
+      // Just preview the new image, do NOT delete old image yet
       this.imageFile = file;
       this.preview = URL.createObjectURL(file);
     },
+
     async updateUser() {
       const formData = new FormData();
-      Object.keys(this.form).forEach(key => {
-        formData.append(key, this.form[key]);
-      });
-      if (this.imageFile) {
-        formData.append("user_image", this.imageFile);
-      }
+      Object.keys(this.form).forEach(key => formData.append(key, this.form[key]));
+      if (this.imageFile) formData.append("user_image", this.imageFile);
+
       try {
         const res = await fetch(`${window.baseUrl}/users/update/${this.userId}`, {
           method: "POST",
@@ -235,18 +216,73 @@ export default {
           },
           body: formData
         });
+
         const result = await res.json();
+
         if (result.error) {
           this.showAlert(result.error, "error");
         } else {
           this.showAlert("Profile updated successfully.", "success");
-          this.getUserData();
+
+          // Optional: delete old image on server if replaced
+          if (this.imageFile) {
+            try {
+              await fetch(`${window.baseUrl}/users/${this.userId}/delete-old-image`, {
+                method: "POST",
+                headers: {
+                  "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+                }
+              });
+            } catch (err) {
+              console.warn("Failed to delete old image:", err);
+            }
+          }
+
+          this.getUserData(); // refresh form
+          this.imageFile = null;
         }
       } catch (error) {
         console.error("Error updating user:", error);
         this.showAlert("Failed to update user profile.", "error");
       }
     },
+
+    async updatePassword() {
+      // Validate new password & confirmation first
+      if (!this.currentPassword) return this.showAlert("Enter your current password", "error");
+      if (!this.newPassword) return this.showAlert("Enter a new password", "error");
+      if (this.newPassword !== this.verifyPassword) return this.showAlert("New passwords do not match", "error");
+
+      try {
+        const res = await fetch(`${window.baseUrl}/user/update-password`, {
+          method: "POST",
+          headers: {
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            current_password: this.currentPassword,
+            new_password: this.newPassword,
+            new_password_confirmation: this.verifyPassword
+          })
+        });
+
+        const result = await res.json();
+
+        if (result.success) {
+          this.showAlert(result.message, "success");
+          this.currentPassword = "";
+          this.newPassword = "";
+          this.verifyPassword = "";
+        } else {
+          this.showAlert(result.message, "error");
+        }
+      } catch (error) {
+        console.error("Error updating password:", error);
+        this.showAlert("Failed to update password.", "error");
+      }
+    },
+
     showAlert(message, type) {
       this.alertMessage = message;
       this.alertType = type;
@@ -258,3 +294,4 @@ export default {
   }
 };
 </script>
+
