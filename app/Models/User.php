@@ -8,7 +8,8 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory;
+    use Notifiable;
 
     protected $table = 'users';
 
@@ -16,19 +17,25 @@ class User extends Authenticatable
         'name',
         'company',
         'email',
-        'password',
+        'first_name',
+        'last_name',
+        'address',
+        'address2',
+        'city',
+        'state',
+        'zip',
+        'country',
+        'user_image',
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
     ];
+
     // make relation ship many to mant
     public function roles()
     {
-            return $this->belongsToMany(Role::class, 'role_user', 'user_id', 'role_id');
-
+        return $this->belongsToMany(Role::class, 'role_user', 'user_id', 'role_id');
     }
-    
 }
-
