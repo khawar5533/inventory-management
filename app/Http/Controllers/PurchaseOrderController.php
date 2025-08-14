@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\InventoryMovement;
+use App\Models\Product;
 use App\Models\ProductLot;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseOrderItem;
@@ -132,5 +133,12 @@ class PurchaseOrderController extends Controller
         return response()->json([
             'salesThisMonth' => array_values($salesData),
         ]);
+    }
+
+    public function stockStatus()
+    {
+        $products = Product::getLowStockProducts();
+
+        return response()->json($products);
     }
 }

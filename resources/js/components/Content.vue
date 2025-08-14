@@ -128,82 +128,34 @@
 											</div>
 										</div>
 									</div>
-									<h5 class="card-title mb-0">Latest Projects</h5>
+									<h5 class="card-title mb-0">Product Quantity Thres</h5>
 								</div>
 								<table id="datatables-dashboard-projects" class="table table-striped my-0">
 									<thead>
 										<tr>
-											<th>Name</th>
-											<th class="d-none d-xl-table-cell">Start Date</th>
-											<th class="d-none d-xl-table-cell">End Date</th>
-											<th>Status</th>
-											<th class="d-none d-md-table-cell">Assignee</th>
-										</tr>
+									<th>Name</th>
+									<th>Threshold</th>
+									<th>Quantity</th>
+									<th>Status</th>
+									</tr>
 									</thead>
 									<tbody>
-										<tr>
-											<td>Project Apollo</td>
-											<td class="d-none d-xl-table-cell">01/01/2023</td>
-											<td class="d-none d-xl-table-cell">31/06/2023</td>
-											<td><span class="badge bg-success">Done</span></td>
-											<td class="d-none d-md-table-cell">Carl Jenkins</td>
-										</tr>
-										<tr>
-											<td>Project Fireball</td>
-											<td class="d-none d-xl-table-cell">01/01/2023</td>
-											<td class="d-none d-xl-table-cell">31/06/2023</td>
-											<td><span class="badge bg-danger">Cancelled</span></td>
-											<td class="d-none d-md-table-cell">Bertha Martin</td>
-										</tr>
-										<tr>
-											<td>Project Hades</td>
-											<td class="d-none d-xl-table-cell">01/01/2023</td>
-											<td class="d-none d-xl-table-cell">31/06/2023</td>
-											<td><span class="badge bg-success">Done</span></td>
-											<td class="d-none d-md-table-cell">Stacie Hall</td>
-										</tr>
-										<tr>
-											<td>Project Nitro</td>
-											<td class="d-none d-xl-table-cell">01/01/2023</td>
-											<td class="d-none d-xl-table-cell">31/06/2023</td>
-											<td><span class="badge bg-warning">In progress</span></td>
-											<td class="d-none d-md-table-cell">Carl Jenkins</td>
-										</tr>
-										<tr>
-											<td>Project Phoenix</td>
-											<td class="d-none d-xl-table-cell">01/01/2023</td>
-											<td class="d-none d-xl-table-cell">31/06/2023</td>
-											<td><span class="badge bg-success">Done</span></td>
-											<td class="d-none d-md-table-cell">Bertha Martin</td>
-										</tr>
-										<tr>
-											<td>Project X</td>
-											<td class="d-none d-xl-table-cell">01/01/2023</td>
-											<td class="d-none d-xl-table-cell">31/06/2023</td>
-											<td><span class="badge bg-success">Done</span></td>
-											<td class="d-none d-md-table-cell">Stacie Hall</td>
-										</tr>
-										<tr>
-											<td>Project Romeo</td>
-											<td class="d-none d-xl-table-cell">01/01/2023</td>
-											<td class="d-none d-xl-table-cell">31/06/2023</td>
-											<td><span class="badge bg-success">Done</span></td>
-											<td class="d-none d-md-table-cell">Ashley Briggs</td>
-										</tr>
-										<tr>
-											<td>Project Wombat</td>
-											<td class="d-none d-xl-table-cell">01/01/2023</td>
-											<td class="d-none d-xl-table-cell">31/06/2023</td>
-											<td><span class="badge bg-warning">In progress</span></td>
-											<td class="d-none d-md-table-cell">Bertha Martin</td>
-										</tr>
-										<tr>
-											<td>Project Zircon</td>
-											<td class="d-none d-xl-table-cell">01/01/2023</td>
-											<td class="d-none d-xl-table-cell">31/06/2023</td>
-											<td><span class="badge bg-danger">Cancelled</span></td>
-											<td class="d-none d-md-table-cell">Stacie Hall</td>
-										</tr>
+									 <tr v-for="(product, index) in products" :key="index">
+									<td>{{ product.product_name }}</td>
+									<td>{{ product.reorder_threshold }}</td>
+									<td>{{ product.total_quantity }}</td>
+									<td>
+										<span
+										class="badge"
+										:class="product.stock_status === 'low' ? 'bg-danger' : 'bg-success'"
+										>
+										{{ product.stock_status }}
+										</span>
+									</td>
+									</tr>
+									<tr v-if="products.length === 0">
+									<td colspan="4" class="text-center">No products found</td>
+									</tr>
 									</tbody>
 								</table>
 							</div>
@@ -215,20 +167,40 @@
 
 		<script>
 		export default {
-		name: 'Login',
+		name: "Dashboard",
 		data() {
 			return {
-			user: window.authUser || {},   // user info
-			dashboard: {},                 // 🔹 add this so fetch can fill it
+			user: window.authUser || {}, // user info
+			dashboard: {},               // holds salesToday, totalEarnings, etc.
+			products: [],                // holds stock status data
 			};
 		},
 		mounted() {
+			// fetch dashboard metrics
 			fetch(`${window.baseUrl}/dashboard-data`)
-			.then(res => res.json())
-			.then(data => {
+			.then((res) => res.json())
+			.then((data) => {
 				this.dashboard = data;
 			})
-			.catch(err => console.error('Error fetching dashboard:', err));
+			.catch((err) => console.error("Error fetching dashboard:", err));
+
+			// fetch stock status
+			fetch(`${window.baseUrl}/purchase-orders/stock-status`)
+			.then((res) => res.json())
+			.then((data) => {
+				this.products = data;
+				// Initialize DataTables after Vue renders DOM
+			this.$nextTick(() => {
+				$('#datatables-dashboard-projects').DataTable({
+				pageLength: 4,
+				lengthChange: false,
+				bFilter: false,
+				autoWidth: false
+				});
+			});
+			
+			})
+			.catch((err) => console.error("Error fetching stock status:", err));
 		},
 		};
 		</script>

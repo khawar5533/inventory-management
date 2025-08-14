@@ -24,6 +24,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [PurchaseOrderController::class, 'dashboard']);
     Route::get('/dashboard-data', [PurchaseOrderController::class, 'dashboardData']);
     Route::get('/dashboard-data-graph', [PurchaseOrderController::class, 'getDashboardData'])->name('dashboard.graph');
+    Route::get('/purchase-orders/stock-status', [PurchaseOrderController::class, 'stockStatus']);
     Route::get('/register', [AuthController::class, 'showRegister']); // shows Register
     Route::get('/userprofile', [AuthController::class, 'showUserProfile']);
     Route::get('/user/profile-data', [AuthController::class, 'getProfileData']);

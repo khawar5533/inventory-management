@@ -82,23 +82,6 @@
             .catch(err => console.error(err));
     });
 
-
-    $(function () {
-        $('#datatables-dashboard-projects').DataTable({
-            pageLength: 6,
-            lengthChange: false,
-            bFilter: false,
-            autoWidth: false
-        });
-    });
-
-    $(function () {
-        $('#datetimepicker-dashboard').datetimepicker({
-            inline: true,
-            sideBySide: false,
-            format: 'L'
-        });
-    });
     </script>
 </body>
 </html>
