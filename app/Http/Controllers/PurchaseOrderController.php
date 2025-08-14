@@ -107,4 +107,30 @@ class PurchaseOrderController extends Controller
             ], 500);
         }
     }
+
+    // getgraph data
+    public function getDashboardData()
+    {
+        $query = DB::table('purchase_orders as po')
+            ->join('purchase_order_items as poi', 'po.id', '=', 'poi.purchase_order_id')
+            ->selectRaw('MONTH(po.created_at) as month, SUM(poi.subtotal) as total')
+            ->whereYear('po.created_at', now()->year)
+            ->groupBy(DB::raw('MONTH(po.created_at)')); // repeat the raw expression
+
+        // Debug SQL
+        $sql = vsprintf(str_replace('?', '%s', $query->toSql()), $query->getBindings());
+        // dd($sql);
+
+        $sales = $query->pluck('total', 'month')->toArray();
+
+        // fill missing months with 0
+        $salesData = [];
+        for ($i = 1; $i <= 12; ++$i) {
+            $salesData[$i] = $sales[$i] ?? 0;
+        }
+
+        return response()->json([
+            'salesThisMonth' => array_values($salesData),
+        ]);
+    }
 }
