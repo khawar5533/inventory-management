@@ -37,6 +37,7 @@
         window.defaultComponent = @json($defaultComponent ?? 'Login');
         window.authUser = @json(Auth::user());
     </script>
+    
 
     {{-- Your charts and map JS remain unchanged below --}}
     <script>

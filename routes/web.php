@@ -20,12 +20,14 @@ Route::get('/', [AuthController::class, 'loadLogin'])->name('login'); // shows L
 Route::post('/login-user', [AuthController::class, 'loginUser']);
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', fn () => view('layouts.app', ['defaultComponent' => 'Content']));
+    // Route::get('/dashboard', fn () => view('layouts.app', ['defaultComponent' => 'Content']));
+    Route::get('/dashboard', [PurchaseOrderController::class, 'dashboard']);
+    Route::get('/dashboard-data', [PurchaseOrderController::class, 'dashboardData']);
     Route::get('/register', [AuthController::class, 'showRegister']); // shows Register
     Route::get('/userprofile', [AuthController::class, 'showUserProfile']);
     Route::get('/user/profile-data', [AuthController::class, 'getProfileData']);
     Route::post('/users/update/{id}', [AuthController::class, 'update']);
-    Route::post('/user/update-password', [AuthController::class, 'updatePassword'])->middleware('auth');
+    Route::post('/user/update-password', [AuthController::class, 'updatePassword']);
     Route::post('/users/{id}/delete-image', [AuthController::class, 'deleteImage']);
     Route::get('/role', [AuthController::class, 'showRoleForm']); // shows Add Role Form
     Route::get('/permission', [PermissionController::class, 'loadPermission']);
