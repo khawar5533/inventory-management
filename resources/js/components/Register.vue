@@ -30,7 +30,7 @@
               <label>Password</label>
               <input v-model="form.password" class="form-control" type="password" placeholder="Enter password" />
             </div>
-            <div class="text-center mt-3">
+            <div class="mt-3">
               <button type="submit" class="btn btn-primary">Sign up</button>
             </div>
           </form>
@@ -60,7 +60,7 @@ export default {
         password: ''
       },
       registeredUser: null,
-      successMessage: '', // ✅ for success alert
+      successMessage: '', // for success alert
       errorMessage: ''    // for error alert
     };
   },

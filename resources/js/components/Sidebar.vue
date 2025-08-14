@@ -10,8 +10,10 @@
     <div class="sidebar-content">
       <div class="sidebar-user">
         <img
-          :src="assetPath('admin/assets/img/avatars/avatar.jpg')"
+          :src="profileImage"
           alt="User avatar"
+          class="rounded-circle mb-2"
+          style="width: 60px; height: 60px; object-fit: cover;"
         />
         <div>{{ formattedUserName }}</div>
         <div>{{ formattedUserRole }}</div>
@@ -151,6 +153,7 @@ export default {
       roles: [],
       userName: "User",
       userRole: "User",
+      profileImage: this.assetPath("admin/assets/img/avatars/avatar.jpg") // default fallback
     };
   },
   computed: {
@@ -189,6 +192,10 @@ export default {
           this.roles = data.roles || [];
           this.userName = data.userName || "User";
           this.userRole = this.roles.length > 0 ? this.roles[0] : "User";
+          // dynamically set profile image if exists
+          if (data.user_image) {
+            this.profileImage = `${window.baseUrl}/storage/${data.user_image}`;
+          }
         })
         .catch((err) => {
           console.error(err);
